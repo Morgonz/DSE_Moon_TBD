@@ -11,7 +11,7 @@ R_Moon = 1737000; %m
 h = 500000; %m
 V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
 r1 = R_Earth + h; %m
-theta = -38; %deg angle the satellite is at the start of the simulation with respect to the positive x-axis
+theta = -19; %deg angle the satellite is at the start of the simulation with respect to the positive x-axis
 
 %orbit of the Moon
 rM = 385000600; %m
@@ -45,7 +45,7 @@ axis equal
 
 %Define Event Function
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
-value = sqrt(y2(1)^2 + y2(2)^2 + y2(3)^2)-385000600+66100000;
+value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-66100000;
 isterminal = 1;
 direction = 1;
 end
