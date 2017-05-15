@@ -8,7 +8,7 @@ R_Earth = 6371000; %m
 R_Moon = 1737000; %m
 
 %Circular Orbit initial conditions
-h = 185000; %m
+h = 500000; %m
 V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
 r1 = R_Earth + h; %m
 
@@ -18,15 +18,15 @@ vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
 
 %transfer orbit
 aT  = (r1+rM)/2; 
-DV1 = 3134; %First Delta V
+DV1 = sqrt(Mu_Earth/r1)*(sqrt((2*rM)/(r1+rM))-1); %First Delta V
 T = 864000; %s time of simulation
 V1 = V0+DV1; %velocity just after the initial burn
-theta = -117; %deg angle of initial position of satellite with respect to positive x-axis
+theta = -114; %deg angle of initial position of satellite with respect to positive x-axis
 
 %insertion in the orbit
-xDV = 1;
-yDV = 1;
-zDV = 1;
+xDV = -497.124553990224;
+yDV = 1221.84052559200;
+zDV = 0;
 
 %orbit around the Moon
 h1 = 1000000; %m
@@ -51,6 +51,7 @@ plot3(y2(1,7),y2(1,8),y2(1,9),'r*') %mark starting location of the Moon
 plot3(y2(length(y2),7),y2(length(y2),8),y2(length(y2),9),'ro') %mark last location of the Moon
 plot3(y2(:,1),y2(:,2),y2(:,3),'g') %Transfer orbit
 plot3(y3(:,1),y3(:,2),y3(:,3),'c') %Orbit after DV2
+plot3(y3(:,7),y3(:,8),y3(:,9),'r') %Orbit of the Moon after DV2
 hold off
 xlabel('x [m]')
 ylabel('y [m]')
