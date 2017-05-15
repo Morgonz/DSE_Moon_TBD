@@ -6,7 +6,7 @@ for theta = linspace(-180,180,361)
     R_Moon = 1737000; %m
 
 %Circular Orbit initial conditions
-    h = 185000; %m
+    h = 500000; %m
     V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
     r1 = R_Earth + h; %m
 
@@ -16,7 +16,7 @@ for theta = linspace(-180,180,361)
 
     %transfer orbit
     aT  = (r1+rM)/2; 
-    DV1 = 3134; %First Delta V
+    DV1 = sqrt(Mu_Earth/r1)*(sqrt((2*rM)/(r1+rM))-1); %First Delta V
     T = 864000; %s time of simulation
     V1 = V0+DV1; %velocity just after the initial burn
 
@@ -32,9 +32,9 @@ for theta = linspace(-180,180,361)
 
     [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
     if te>1000
-        xp2 = y2(length(y2),1); %position in x-direction as transfer orbit crosses target orbit
-        yp2 = y2(length(y2),2); %position in y-direction as transfer orbit crosses target orbit
-        zp2 = y2(length(y2),3); %position in z-direction as transfer orbit crosses target orbit
+        x2 = y2(length(y2),1); %position in x-direction as transfer orbit crosses target orbit
+        y2 = y2(length(y2),2); %position in y-direction as transfer orbit crosses target orbit
+        z2 = y2(length(y2),3); %position in z-direction as transfer orbit crosses target orbit
         xV2 = y2(length(y2),4); %velocity in x direction as transfer orbit crosses target orbit
         yV2 = y2(length(y2),5); %velocity in y direction as transfer orbit crosses target orbit
         zV2 = y2(length(y2),6); %velocity in z direction as transfer orbit crosses target orbit
@@ -45,35 +45,18 @@ for theta = linspace(-180,180,361)
         yVM2 = y2(length(y2),11); %velocity in y-direction of the Moon
         zVM2 = y2(length(y2),12); %velocity in z-direction of the Moon
         
-        if xp2>xM2
-            theta2=atan((yp2-yM2)/(xp2-xM2));
+        if x2>xM2
+            theta2=atan((y2-yM2)/(x2-xM2));
         else
-            theta2=atan((yp2-yM2)/(xp2-xM2))+pi;
+            theta2=atan((y2-yM2)/(x2-xM2))+pi;
         end
-        xV3 = V3*sin(theta2); %target velocity in x-direction in Moon reference frame
-        yV3 = -V3*cos(theta2); %target velocity in y-direction in Moon reference frame
-        xVtar = xV3+xVM2; %target velocity in x-direction in Earth reference frame
-        yVtar = yV3+yVM2; %target velocity in y-direction in Earth reference frame
-        zVtar = 0;
+        xVtar = -V3*sin(theta2); %target velocity in x-direction in Moon reference frame
+        yVtar = V3*cos(theta2); %target velocity in y-direction in Moon reference frame
+        xVtar = xVtar+xVM2; %target velocity in x-direction in Earth reference frame
+        yVtar = yVtar+yVM2; %target velocity in y-direction in Earth reference frame
         
-        xDV2 = xVtar - xV2; %delta V in x-direction
-        yDV2 = yVtar - yV2; %delta V in y-direction
-        zDV2 = zVtar - zV2; %delta V in z-direction
-        
-        DV2 = sqrt(xDV2^2 + yDV2^2 + zDV2^2);
-        
-        xV3a = V3*sin(theta2); %target velocity in x-direction in Moon reference frame
-        yV3a = -V3*cos(theta2); %target velocity in y-direction in Moon reference frame
-        xVtara = xV3a+xVM2; %target velocity in x-direction in Earth reference frame
-        yVtara = yV3a+yVM2; %target velocity in y-direction in Earth reference frame
-        zVtara = 0;
-        
-        xDV2a = xVtara - xV2; %delta V in x-direction
-        yDV2a = yVtara - yV2; %delta V in y-direction
-        zDV2a = zVtara - zV2; %delta V in z-direction
-        
-        DV2a = sqrt(xDV2a^2 + yDV2a^2 + zDV2a^2);
-        time = [time; [theta DV2 DV2a]];
+        xDV2 = xVtar - x2; %delta V in x-direction
+        yDV@
         
          
     end
