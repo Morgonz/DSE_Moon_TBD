@@ -51,7 +51,7 @@ plot3(y2(1,7),y2(1,8),y2(1,9),'r*') %mark starting location of the Moon
 plot3(y2(length(y2),7),y2(length(y2),8),y2(length(y2),9),'ro') %mark last location of the Moon
 plot3(y2(:,1),y2(:,2),y2(:,3),'g') %Transfer orbit
 plot3(y3(:,1),y3(:,2),y3(:,3),'c') %Orbit after DV2
-plot3(y3(:,7),y3(:,8),y3(:,9),'r') %Orbit of the Moon after DV2
+%plot3(y3(:,7),y3(:,8),y3(:,9),'r') %Orbit of the Moon after DV2
 hold off
 xlabel('x [m]')
 ylabel('y [m]')

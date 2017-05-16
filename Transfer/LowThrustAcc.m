@@ -16,7 +16,6 @@ zvM = state(12); %speed in z-direction of the Moon
 
 Mu_Earth = 3.98574405E+14; %m^3 s^-2 Gravitational parameter of the Earth
 Mu_Moon = 4.902801e12; %m^3 s^-2 Gravitational parameter of the Moon
-m= 100; %total mass of the transfer vehicle
 
 v = sqrt(xv^2 + yv^2 + zv^2); %velocity satellite
 pS = sqrt(xp^2 + yp^2 + zp^2); %position satellite
@@ -27,8 +26,13 @@ asE = -(Mu_Earth/(pS*pS*pS)); %acceleration of the satellite due to the Earth
 asM = -(Mu_Moon/(dSM^3)); %acceleration of the satellite due to the Moon
 aM  = -((Mu_Earth + Mu_Moon)/(pM^3)); %acceleration of the Moon
 
+%mass calculations
+Mdry = 2000; %kg dry mass estimation
+Mprop = 1000; %kg propellant mass estimation
+m = 3000; %kg initial mass
+
 %thrust force
-N = 90e-3; %N PPS-1350 Hall effect
+N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
 aN = N/m; %acceleration caused by the thrust force
 
 xa = asE.* xp + asM.*(xp-xM) + aN*(xv/v); %accelaration in x-direction of the satellite

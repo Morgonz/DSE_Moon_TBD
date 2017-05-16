@@ -26,8 +26,13 @@ asE = -(Mu_Earth/(pS*pS*pS)); %acceleration of the satellite due to the Earth
 asM = -(Mu_Moon/(dSM^3)); %acceleration of the satellite due to the Moon
 aM  = -((Mu_Earth + Mu_Moon)/(pM^3)); %acceleration of the Moon
 
+%mass calculations
+Mdry = 2000; %kg dry mass estimation
+Mprop = 1000; %kg propellant mass estimation
+m = 3000 %kg initial mass
+
 %thrust force
-N = 90e-3; %N PPS-1350 Hall effect
+N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
 aN = N/m; %acceleration caused by the thrust force
 
 xa = asE.* xp + asM.*(xp-xM) + aN*(xv/v); %accelaration in x-direction of the satellite
