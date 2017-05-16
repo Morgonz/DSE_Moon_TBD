@@ -28,7 +28,7 @@ T1 = [1 0 0;...
       0 sin(i) cos(i)];
 T2
 phase = 0;
-for a=(0+phase:pi/10:(2*pi+phase)
+for a=(0+phase:pi/10:(2*pi+phase))
     z = [z 
     %calculate position
 end
