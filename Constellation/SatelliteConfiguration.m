@@ -1,6 +1,6 @@
 %% Initial parameters
 %Constellation inputs
-%R = 3; %Redundancy parameter [-]
+%RP = 1; %Redundancy parameter [-]
 h = 400e3; %Network satellite height [m]
 i = deg2rad(5); %Elevation angle
 
@@ -17,8 +17,8 @@ R_S = R_M + h;
 
 
 %Ground swath width
-a = asin(R_M*cos(i)/(R_S));
-b = acos(R_M*cos(i)/(R_S))-i;
+a = asin(R_M*cos(i)/(R_S)); %half angle of satellite vision on the Moon
+b = acos(R_M*cos(i)/(R_S))-i; %half angle 
 
 if a>S_FOV
     %Calculate moon coverage angle with antenna FOV
