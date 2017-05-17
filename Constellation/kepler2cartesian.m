@@ -1,39 +1,37 @@
 %kepler2spherical converter function
 
-%% inputs
-a = 0; %[m]        Semi-major axis
-e = 0; %[-]         Eccentricity
-i = 0; %[deg]       Inclination
-RAAN = deg2rad(0); %[deg]    Right argument of the ascending node
-%phasing is done automatically with uniform satellite spacing
-
 %parameters
 R_M = 1737.1e3; %[m]
-H_S = 400e3; %[m]
-R_S = R_M+H_S; %[m]
-
 M_M = 7.342e22; %[kg]
 G = 6.67408e-11;
-mu_M = G*M_M;
+GMm = G*M_M;
+%% inputs
+e = 0.5; %[-]         Eccentricity
+i = deg2rad(30); %[deg]       Inclination
+RAAN = deg2rad(0); %[deg]    Right argument of the ascending node
+omega = deg2rad(0); %[deg] argument of pericenter
+phase = 0; % initial phase starting point
 
-%start position
-x = R_S*cos(RAAN);
-y = R_S*sin(RAAN);
-z = 0;
 
-d = [x;y;z];
 
-T1 = [1 0 0;...
-      0 cos(i) sin(i);...
-      0 sin(i) cos(i)];
-T2
-phase = 0;
-for a=(0+phase:pi/10:(2*pi+phase))
-    z = [z 
-    %calculate position
-end
+h = 400e3; %[m]
+R_S = R_M+h; %[m] minimum altitude (periapsis)
+a = R_S/(1-e);
 
-%% Outputs
-R(t)
-theta(t)
-phi(t)
+%kep2chart_2002
+
+nu=(linspace(phase,2*pi+phase,100))';
+r = a*(1-e^2)./(1+e.*cos(nu));
+
+X = r.*(cos(RAAN).*cos(omega+nu)-sin(RAAN).*sin(omega+nu)*cos(i));
+Y = r.*(sin(RAAN).*cos(omega+nu)+cos(RAAN).*sin(omega+nu)*cos(i));
+Z = r.*(sin(i).*sin(omega+nu));
+[p,q,r] = sphere(40);
+p = p.*R_M; q = q.*R_M; r = r.*R_M;
+
+surf(p,q,r);hold on;
+plot3(X,Y,Z,'LineWidth',1.5);hold on;
+scatter3(X(1),Y(1),Z(1),16);hold on;
+axis vis3d
+axis equal
+

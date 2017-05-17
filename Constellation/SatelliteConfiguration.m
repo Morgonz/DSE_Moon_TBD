@@ -4,7 +4,7 @@
 h = 400e3; %Network satellite height [m]
 i = deg2rad(5); %Elevation angle
 
-S_FOV = deg2rad(120/2); %Satellite field of view
+S_FOV = deg2rad(100/2); %Satellite field of view
 R_FOV = deg2rad(120/2); %Rover field of view
 
 %Moon parameters
@@ -18,11 +18,13 @@ R_S = R_M + h;
 
 %Ground swath width
 a = asin(R_M*cos(i)/(R_S)); %half angle of satellite vision on the Moon
-b = acos(R_M*cos(i)/(R_S))-i; %half angle 
+%b = acos(R_M*cos(i)/(R_S))-i; %half angle 
 
 if a>S_FOV
     %Calculate moon coverage angle with antenna FOV
-    b=deg2rad(30)-acos((R_S*sin(deg2rad(60)))/R_M);
+    %b=deg2rad(90)-acos((R_S*sin(deg2rad(S_FOV)))/R_M);
+    b = deg2rad(90) - S_FOV - acos((R_S*sin(S_FOV))/R_M);
+    disp('bug')
 else
     %Calculate moon coverage angle with Moon FOV + elevation angle (moon surface roughness)
     b = acos(R_M*cos(i)/(R_S))-i;
