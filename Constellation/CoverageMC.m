@@ -3,15 +3,15 @@ n = 6; % orbit planes
 p = 12; % sats/orbit
 %ASSUME 1 SAT FAILS PER YEAR
 nsf = 1/(n*p); %#sats failing per year
-prob = 1-nsf/(365*24); %1- #sats failing per hour = prob
+prob = 1-nsf/(365); %1- #sats failing per hour = prob
 
-T_resend = 365*24/2; %hours in 6 months of resend time
-T_replace = 24*365/12; %one month
+T_resend = 365/2; %hours in 6 months of resend time
+T_replace = 365/12; %one month
 launchnew = 0;
 n_spare = 6;
 launch_thresh = 3;
 n_launch = 6;
-nsamples = 131400; %365*24*15
+nsamples = 365*15; %365*24*15
 Tsend = 0;
 
 %Construct satellite IDs
@@ -35,12 +35,12 @@ histlist = [];
 failtime = 0;
 brokenID = [];
 
-for cycles=1:10
+for cycles=1:10000
     sysfail = 0;
     count = 0;
     while count < 1&&sysfail==0
         st = [cycles count];
-        disp(st)
+        %disp(st)
         failures = zeros(size(ID));
         status = zeros(size(ID));
         rows = [];
@@ -101,8 +101,8 @@ for cycles=1:10
 
                             %disp('INITIATE LAUNCH')
                         end
-                        notice_repair = ['Sat ' num2str(e(3)) ' is replaced. ' num2str(n_spare) ' spares left.'];
-                        disp(notice_repair)
+                        %notice_repair = ['Sat ' num2str(e(3)) ' is replaced. ' num2str(n_spare) ' spares left.'];
+                        %disp(notice_repair)
                         replaced = [replaced l];
                         status(e(1),e(2)) = 0;
                     else
@@ -131,7 +131,7 @@ for cycles=1:10
 
                 for diff=IDdiff
                     if abs(diff)==100||abs(diff)==1||abs(diff)==11||abs(diff)==500
-                        notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
+                        %notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
                         sysfail = 1;
                         failtime = failtime + 1;
                         bID = failure_IDs;
@@ -141,7 +141,7 @@ for cycles=1:10
             end     
         end
         if sysfail == 1
-            disp(notice_sysfail)
+            %disp(notice_sysfail)
             brokenID = [brokenID bID'];
             
         end
@@ -151,6 +151,6 @@ for cycles=1:10
     end
     histlist = [histlist count*sysfail];
 end
-notice_end = ['Total non-100% fraction: ' num2str(failtime/(24*365*15)) '. Max sats broken simultaneously: ' num2str(max(maxbroken))];
+notice_end = ['Total non-100% fraction: ' num2str(failtime/(365*15)) '. Max sats broken simultaneously: ' num2str(max(maxbroken))];
 disp(notice_end)
 hist(histlist)
