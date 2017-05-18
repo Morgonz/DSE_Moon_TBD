@@ -27,11 +27,11 @@ DV2 = sqrt(GMe/r2)*(1-sqrt((2*r1)/(r1+r2)));
 T2 = pi*sqrt((aT)^3/GMe);
 
 % options of the integrator
-options = odeset('RelTol',1e-6);
+options = odeset('RelTol',1e-12, 'Events', @CrossMoonOrbit);
 
 % The time integration of the sat
-[t,y] = ode45(@sat3BP,[0 T],[0 Re+h 0 V0 0 0 0 -r2 0 -VM 0 0],options);
-[t2,y2] = ode45(@sat3BP,[0 T2],[0 Re+h 0 V0+DV1 0 0 0 -r2 0 -VM 0 0],options);
+[t,y,te] = ode45(@sat3BP,[0 2*T],[0 Re+h 0 V0 0 0 0 -r2 0 -VM 0 0],options);
+%[t2,y2] = ode45(@sat3BP,[0 T2],[0 Re+h 0 V0+DV1 0 0 0 -r2 0 -VM 0 0],options);
 
 figure
 plot3(y(:,1),y(:,2),y(:,3))
@@ -40,3 +40,9 @@ plot3(y(:,7),y(:,8),y(:,9),'r')
 plot3(y2(:,1),y2(:,2),y2(:,3),'g')
 hold off
 axis equal
+
+function [value,isterminal,direction] = CrossMoonOrbit(t,y)
+value = y(8)+ 385000600;
+isterminal = 0;
+direction = 0;
+end

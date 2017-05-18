@@ -24,8 +24,8 @@ V1 = V0+DV1; %velocity just after the initial burn
 theta = -114; %deg angle of initial position of satellite with respect to positive x-axis
 
 %insertion in the orbit
-xDV = -497.124553990224;
-yDV = 1221.84052559200;
+xDV = -93.1930113102339;
+yDV = 1315.91273534218;
 zDV = 0;
 
 %orbit around the Moon
@@ -39,7 +39,7 @@ options1 = odeset('RelTol', 1e-12, 'Events', @CrossMoonOrbit);
 
 [t,y] = ode45(@HohmannAcc,[0 T],[0 r1 0 -V0 0 0 rM 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3] = ode45(@HohmannAcc,[0 T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+[t3,y3] = ode45(@HohmannAcc,[0 10*T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
 [X,Y,Z] = sphere(40);
 
 figure
@@ -52,17 +52,20 @@ plot3(y2(length(y2),7),y2(length(y2),8),y2(length(y2),9),'ro') %mark last locati
 plot3(y2(:,1),y2(:,2),y2(:,3),'g') %Transfer orbit
 plot3(y3(:,1),y3(:,2),y3(:,3),'c') %Orbit after DV2
 %plot3(y3(:,7),y3(:,8),y3(:,9),'r') %Orbit of the Moon after DV2
+
+
 hold off
 xlabel('x [m]')
 ylabel('y [m]')
 zlabel('z [m]')
 axis equal
-
+figure
+plot(t3, sqrt((y3(:,1)-y3(:,7)).^2 + (y3(:,2)-y3(:,8)).^2))
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
 value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-2737000;
 isterminal = 1;
-direction = 1;
+direction = 0;
 end
 

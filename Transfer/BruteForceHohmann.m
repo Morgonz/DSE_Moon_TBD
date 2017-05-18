@@ -1,6 +1,6 @@
 
 time = [];
-for theta = linspace(-180,180,3601)
+for theta = linspace(-180,180,361)
     Mu_Earth = 3.98574405E+14; %m^3 s^-2
     Mu_Moon = 4.902801e12; %m^3 s^-2
     R_Earth = 6371000; %m
@@ -33,18 +33,18 @@ for theta = linspace(-180,180,3601)
 
     [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
     if te>1000
-        xp2 = y2(length(y2),1); %position in x-direction as transfer orbit crosses target orbit
-        yp2 = y2(length(y2),2); %position in y-direction as transfer orbit crosses target orbit
-        zp2 = y2(length(y2),3); %position in z-direction as transfer orbit crosses target orbit
-        xV2 = y2(length(y2),4); %velocity in x direction as transfer orbit crosses target orbit
-        yV2 = y2(length(y2),5); %velocity in y direction as transfer orbit crosses target orbit
-        zV2 = y2(length(y2),6); %velocity in z direction as transfer orbit crosses target orbit
-        xM2 = y2(length(y2),7); %x-coordinate of Moon
-        yM2 = y2(length(y2),8); %y-coordinate of Moon
-        zM2 = y2(length(y2),9); %z-coordinate of Moon
-        xVM2 = y2(length(y2),10); %velocity in x-direction of the Moon
-        yVM2 = y2(length(y2),11); %velocity in y-direction of the Moon
-        zVM2 = y2(length(y2),12); %velocity in z-direction of the Moon
+        xp2 = y2(end,1); %position in x-direction as transfer orbit crosses target orbit
+        yp2 = y2(end,2); %position in y-direction as transfer orbit crosses target orbit
+        zp2 = y2(end,3); %position in z-direction as transfer orbit crosses target orbit
+        xV2 = y2(end,4); %velocity in x direction as transfer orbit crosses target orbit
+        yV2 = y2(end,5); %velocity in y direction as transfer orbit crosses target orbit
+        zV2 = y2(end,6); %velocity in z direction as transfer orbit crosses target orbit
+        xM2 = y2(end,7); %x-coordinate of Moon
+        yM2 = y2(end,8); %y-coordinate of Moon
+        zM2 = y2(end,9); %z-coordinate of Moon
+        xVM2 = y2(end,10); %velocity in x-direction of the Moon
+        yVM2 = y2(end,11); %velocity in y-direction of the Moon
+        zVM2 = y2(end,12); %velocity in z-direction of the Moon
         
         if xp2>xM2
             theta2=atan((yp2-yM2)/(xp2-xM2));
@@ -64,14 +64,13 @@ for theta = linspace(-180,180,3601)
         DV2 = sqrt(xDV2^2 + yDV2^2 + zDV2^2);
         
         time = [time; [theta DV2 xDV2 yDV2 zDV2]];
-        
-         
     end
+    disp(theta)
 end
-toc
+
     %Define Event Function, target orbit at 1000 km above Moon surface
     function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
     value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-2737000;
     isterminal = 1;
-    direction = 1;
+    direction = 0;
     end
