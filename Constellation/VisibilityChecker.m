@@ -1,5 +1,5 @@
 %% Visibility checker
-clear all;
+%clear all;
 close all;
 clc;
 
@@ -15,16 +15,14 @@ Moon_mesh = [X,Y,Z]; % Npoints x 3
 
 %% Import Satellite locations % Nsats x 3 
 % Network
-sat_loc =    [-10e3     0        0; 
-              -10e3     0        0;
-                0      280e3     0;
-                0,      0      280e3];
-sat_loc = (sat_loc~=0)*Rm+sat_loc;
+%sat_loc =    [A(1)     B(1)        C(1); 
+            %  D(1)     E(1)        F(1)];
+%sat_loc = (sat_loc~=0)*Rm+sat_loc;
 
-sat_loc = walkerdeltagenerator(56,27,3,400e3);
-sat_loc = sat_loc(:,1:3);
+%sat_loc = walkerdeltagenerator(60,2,3,400e3);
+sat_loc = loc_sat(:,1:3);
 
-relay = 0;
+relay = 1;
 % Relay
 rel_loc =    [5000e3     0         0; 
                 0      5000e3     0;
@@ -39,10 +37,10 @@ ele_ang = deg2rad(5); % [rad]
 
 % Network
 S_rec   = deg2rad(60); % [rad] half beam angle when satellite receives data from rover
-max_dist_G_rec = 650e3; % [m] Max distance at S_rec to close budget
+max_dist_G_rec = (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
 
 S_tra   = deg2rad(60); % [rad] half beam angle when satellite sends data to rover
-max_dist_S_rec = 650e3; % [m] Max distance at S_rec to close budget
+max_dist_S_rec = (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
 
 % Relay
 R_rec   = deg2rad(25); % [rad] half beam angle when relay receives data from network
@@ -104,26 +102,32 @@ for idx=1:length(sat_loc)
                     end 
                 end
             else 
-            disp("error : Relay satellite altitude is lower than network alt + 100 km")
+            disp('error : Relay satellite altitude is lower than network alt + 100 km')
             Rsatfaulty = sat_loc(idx,:) 
             end 
         end  
         end
     else
-        disp("error : Network satellite altitude is lower than 100 km")
+        disp('error : Network satellite altitude is lower than 100 km')
         Nsatfaulty = sat_loc(idx,:)
     end 
     idx
 end
+
+zeroes = sum(GS_vis_list(:)==0)/length(GS_vis_list)*100
+ones = sum(GS_vis_list(:)==1)/length(GS_vis_list)*100
+rest = sum(GS_vis_list(:)>1)/length(GS_vis_list)*100
+
+   
 
 %% Plotting
 figure
 scatter3(X,Y,Z,1,SG_vis_list)
 hold on
 scatter3(sat_loc(:,1),sat_loc(:,2),sat_loc(:,3),10, SR_vis_list)
-if relay==0
-    scatter3(rel_loc(:,1),rel_loc(:,2),rel_loc(:,3),20,[0,0,0,0])
-end
+% if relay==0
+%     scatter3(rel_loc(:,1),rel_loc(:,2),rel_loc(:,3),20,[0,0,0,0])
+% end
 colorbar
 axis equal
 
@@ -135,18 +139,19 @@ if relay==0
     scatter3(rel_loc(:,1),rel_loc(:,2),rel_loc(:,3),20,[0,0,0,0])
 end 
 colorbar
+axis vis3d
 axis equal
 
-[lat,lon,z] = ecef2lla(X,Y,Z);
-lat = rad2deg(lat);
-lon = rad2deg(lon)-180;
-
-figure
-scatter(lon,lat,1,GS_vis_list)
-
-figure
-scatter(lon,lat,1,SG_vis_list)
-
+% [lat,lon,z] = ecef2lla(X,Y,Z);
+% lat = rad2deg(lat);
+% lon = rad2deg(lon)-180;
+% 
+% figure
+% scatter(lon,lat,1,GS_vis_list)
+% 
+% figure
+% scatter(lon,lat,1,SG_vis_list)
+% 
 
 
     
