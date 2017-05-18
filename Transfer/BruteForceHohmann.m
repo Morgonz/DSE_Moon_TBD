@@ -1,4 +1,4 @@
-tic
+
 time = [];
 for theta = linspace(-180,180,3601)
     Mu_Earth = 3.98574405E+14; %m^3 s^-2

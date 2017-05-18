@@ -16,6 +16,8 @@ zvM = state(12); %speed in z-direction of the Moon
 
 Mu_Earth = 3.98574405E+14; %m^3 s^-2 Gravitational parameter of the Earth
 Mu_Moon = 4.902801e12; %m^3 s^-2 Gravitational parameter of the Moon
+R_Earth = 6371000; %m
+R_Moon = 1737000; %m
 
 v = sqrt(xv^2 + yv^2 + zv^2); %velocity satellite
 pS = sqrt(xp^2 + yp^2 + zp^2); %position satellite
@@ -29,14 +31,33 @@ aM  = -((Mu_Earth + Mu_Moon)/(pM^3)); %acceleration of the Moon
 %mass calculations
 Mdry = 2000; %kg dry mass estimation
 Mprop = 1000; %kg propellant mass estimation
-m = 3000 %kg initial mass
+m = 3000; %kg initial mass
+
+%circularisation of the orbit
+vcir = sqrt(Mu_Moon/dSM); %m/s
+if xp>xM
+    theta2=atan((yp-yM)/(xp-xM));
+else
+    theta2=atan((yp-yM)/(xp-xM))+pi;
+end
+xvreq = xvM + vcir*sin(theta2);
+yvreq = yvM - vcir*cos(theta2);
+xdv = xvreq-xv;
+ydv = yvreq-yv;
+dv = sqrt(xdv^2 + ydv^2);
 
 %thrust force
-N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
+if dv<100
+    N=0;
+    disp(hi)
+else
+    N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
+end
+
 aN = N/m; %acceleration caused by the thrust force
 
-xa = asE.* xp + asM.*(xp-xM) + aN*(xv/v); %accelaration in x-direction of the satellite
-ya = asE.* yp + asM.*(yp-yM) + aN*(yv/v); %acceleration in y-direction of the satellite
+xa = asE.* xp + asM.*(xp-xM) + aN*(xdv/dv); %accelaration in x-direction of the satellite
+ya = asE.* yp + asM.*(yp-yM) - aN*(ydv/dv); %acceleration in y-direction of the satellite
 za = asE.* zp + asM.*(zp-zM) + aN*(zv/v); %acceleration in z-direction of the satellite
 
 xaM = aM*xM; %acceleration in x-direction of the Moon
