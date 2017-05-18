@@ -1,12 +1,12 @@
 %% Visibility checker
 %clear all;
 close all;
-clc;
+%clc;
 
 %% Create Moon Mesh
 Rm  = 1738100; % [m]
 
-[X,Y,Z] = sphere(300);
+[X,Y,Z] = sphere(500);
 X = reshape(X,length(X)*length(X),1).*Rm;
 Y = reshape(Y,length(Y)*length(Y),1).*Rm;
 Z = reshape(Z,length(Z)*length(Z),1).*Rm;
@@ -37,10 +37,10 @@ ele_ang = deg2rad(5); % [rad]
 
 % Network
 S_rec   = deg2rad(60); % [rad] half beam angle when satellite receives data from rover
-max_dist_G_rec = (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
+max_dist_G_rec = (norm(sat_loc(1,:))-Rm)/cos(S_rec)-200000; % [m] Max distance at S_rec to close budget
 
 S_tra   = deg2rad(60); % [rad] half beam angle when satellite sends data to rover
-max_dist_S_rec = (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
+max_dist_S_rec = (norm(sat_loc(1,:))-Rm)/cos(S_tra)-200000; % [m] Max distance at S_rec to close budget
 
 % Relay
 R_rec   = deg2rad(25); % [rad] half beam angle when relay receives data from network
@@ -103,7 +103,7 @@ for idx=1:length(sat_loc)
                 end
             else 
             disp('error : Relay satellite altitude is lower than network alt + 100 km')
-            Rsatfaulty = sat_loc(idx,:) 
+            Rsatfaulty = sat_loc(idx,:)
             end 
         end  
         end
@@ -111,12 +111,14 @@ for idx=1:length(sat_loc)
         disp('error : Network satellite altitude is lower than 100 km')
         Nsatfaulty = sat_loc(idx,:)
     end 
-    idx
+    %idx
 end
 
-zeroes = sum(GS_vis_list(:)==0)/length(GS_vis_list)*100
-ones = sum(GS_vis_list(:)==1)/length(GS_vis_list)*100
-rest = sum(GS_vis_list(:)>1)/length(GS_vis_list)*100
+zeroes = sum(GS_vis_list(:)==0)/length(GS_vis_list)*100;
+ones = sum(GS_vis_list(:)==1)/length(GS_vis_list)*100;
+rest = sum(GS_vis_list(:)>1)/length(GS_vis_list)*100;
+coverage_perc = [zeroes ones rest];
+disp(coverage_perc)
 
    
 
