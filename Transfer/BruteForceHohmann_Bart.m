@@ -13,7 +13,7 @@ for theta = linspace(-180,180,361)
 
     %orbit of the Moon
     rM = 385000600; %m
-    vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
+    vM = sqrt((Mu_Earth+Mu_Moon)/rM); %m/s speed of rotation of the Moon
 
     %transfer orbit
     aT  = (r1+rM)/2; 
@@ -21,10 +21,11 @@ for theta = linspace(-180,180,361)
     T = 864000; %s time of simulation
     V1 = V0+DV1; %velocity just after the initial burn
 
-    %orbit around the Moon
-    h1 = 1000000; %m
-    r3 = h1 + R_Moon; %radius of the orbit around the Moon
-    V3 = sqrt(Mu_Moon/r3); %m/s orbiting speed in Moon reference frame
+    %elliptic orbit around the Moon
+    rp = 2436000; %m apocentre
+    ra = 10000000; %m pericentre
+    a_e = (ra+rp)/2; %m semi-major axis of the Moon
+    V3 = sqrt((2*Mu_Moon/rp)-(Mu_Moon/a_e)); %m/s orbiting speed in Moon reference frame
 
 
     %options of the integrator
@@ -51,8 +52,8 @@ for theta = linspace(-180,180,361)
         else
             theta2=atan((yp2-yM2)/(xp2-xM2))+pi;
         end
-        xV3 = V3*sin(theta2); %target velocity in x-direction in Moon reference frame
-        yV3 = -V3*cos(theta2); %target velocity in y-direction in Moon reference frame
+        xV3 = -V3*sin(theta2); %target velocity in x-direction in Moon reference frame
+        yV3 = V3*cos(theta2); %target velocity in y-direction in Moon reference frame
         xVtar = xV3+xVM2; %target velocity in x-direction in Earth reference frame
         yVtar = yV3+yVM2; %target velocity in y-direction in Earth reference frame
         zVtar = 0;
@@ -70,7 +71,7 @@ end
 
     %Define Event Function, target orbit at 1000 km above Moon surface
     function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
-    value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-2737000;
+    value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-2436000;
     isterminal = 1;
     direction = 0;
     end

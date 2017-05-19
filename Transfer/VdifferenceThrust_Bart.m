@@ -1,5 +1,5 @@
-ReverseTime = xlsread('C:\Users\Bart\Desktop\DSE\DSE_Moon_TBD\Transfer\Data\SpiralBackTimeDatastep001.xlsx');
-SpiralOut = xlsread('C:\Users\Bart\Desktop\DSE\DSE_Moon_TBD\Transfer\Data\SpiralOutDatastep001.xlsx');
+ReverseTime = xlsread('SpiralBackTimeDatastep001.xlsx');
+SpiralOut = xlsread('SpiralOutDatastep001.xlsx');
 
 Thrust = ReverseTime(:,1);
 VReverseTime = sqrt(ReverseTime(:,6).^2 + ReverseTime(:,7).^2);
@@ -13,4 +13,3 @@ plot(Thrust,abs(Vdifference))
 xlabel('Thrust [N]')
 ylabel('V_{difference} [m/s]')
 title('Difference in velocity at L1 between phase 1 and phase 2')
-
