@@ -20,15 +20,27 @@ vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
 options2 = odeset('RelTol', 1e-9, 'Events', @CrossMoonOrbit);
 T = 10000000000; %s time of simulation
 Speed = [];
-for N = linspace(0.3,1,15)
-    [t,y,te] = ode45(@(t,y)LowThrustAccVar(t,y,N),[0 T], [r1 0 0 0 V0 0 rM 0 0 0 vM 0],options2);
-    
-    if te>10
-        Speed = [Speed; N y(end,:)];
-    end
-    disp(N)
-       
-end
+N = 0.43; %N
+
+[t,y,te] = ode45(@(t,y)LowThrustAccVar(t,y,N),[0 T], [r1 0 0 0 V0 0 rM 0 0 0 vM 0],options2);
+[X,Y,Z] = sphere(40);
+figure
+hold on
+plot(y(:,1),y(:,2))
+surf(X*R_Earth, Y*R_Earth, Z*R_Earth)
+axis equal
+xlabel('x [m]')
+ylabel('y [m]')
+title('Phase 1: Spiral out from Earth')
+hold off
+
+V_start = sqrt(y(1,4)^2 + y(1,5)^2);
+V_end = sqrt(y(end,4)^2 + y(end,5)^2);
+disp(V0)
+disp(V_start)
+disp(V_end)
+      
+
 %Define Event Function
 function [value,isterminal,direction] = CrossMoonOrbit(t,y)
 value = sqrt((y(1))^2 + (y(2))^2 + (y(3))^2)-(3.2639*10^8);

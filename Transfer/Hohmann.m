@@ -27,6 +27,7 @@ theta = -114; %deg angle of initial position of satellite with respect to positi
 xDV = -93.1930113102339;
 yDV = 1315.91273534218;
 zDV = 0;
+DV2 = sqrt(xDV^2 + yDV^2);
 
 %orbit around the Moon
 h1 = 1000000; %m
@@ -39,7 +40,7 @@ options1 = odeset('RelTol', 1e-12, 'Events', @CrossMoonOrbit);
 
 [t,y] = ode45(@HohmannAcc,[0 T],[0 r1 0 -V0 0 0 rM 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3] = ode45(@HohmannAcc,[0 10*T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+[t3,y3] = ode45(@HohmannAcc,[0 T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
 [X,Y,Z] = sphere(40);
 
 figure
@@ -59,8 +60,7 @@ xlabel('x [m]')
 ylabel('y [m]')
 zlabel('z [m]')
 axis equal
-figure
-plot(t3, sqrt((y3(:,1)-y3(:,7)).^2 + (y3(:,2)-y3(:,8)).^2))
+
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)

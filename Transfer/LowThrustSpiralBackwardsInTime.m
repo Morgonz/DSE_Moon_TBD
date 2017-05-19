@@ -25,16 +25,18 @@ v3 = sqrt(Mu_Moon/r3); %m/s
 options2 = odeset('RelTol', 1e-9, 'Events', @CrossMoonOrbit);
 T = 10000000000; %s time of simulation
 Speed = [];
+N = 0.43;
 
-for N=linspace(0.3,1,15)
-    [t,y,te] = ode45(@(t,y)LowThrustAccVarRev(t,y,N),[0 -T], [rM+r3 0 0 0 vM+v3 0 rM 0 0 0 vM 0],options2);
+[t,y,te] = ode45(@(t,y)LowThrustAccVarRev(t,y,N),[0 -T], [rM+r3 0 0 0 vM+v3 0 rM 0 0 0 vM 0],options2);
 
-    if te<-10
-        Speed = [Speed; N y(end,:)];
-    end
-    disp(N)
-end
-     
+
+ figure
+ plot(y(:,1)-y(:,7),y(:,2)-y(:,8))
+ axis equal
+ xlabel('x [m]')
+ ylabel('y [m]')
+ title('Phase 2: Insertion into Moon orbit')
+
 
 %Define Event Function
 function [value,isterminal,direction] = CrossMoonOrbit(t,y)
