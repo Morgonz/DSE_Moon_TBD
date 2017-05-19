@@ -31,7 +31,7 @@ aM  = -((Mu_Earth + Mu_Moon)/(pM^3)); %acceleration of the Moon
 %mass calculations
 Mdry = 2000; %kg dry mass estimation
 Mprop = 1000; %kg propellant mass estimation
-m = 3000; %kg initial mass
+m = 1000; %kg initial mass
 
 %circularisation of the orbit
 vcir = sqrt(Mu_Moon/dSM); %m/s
