@@ -12,7 +12,7 @@ h = 500000;
 
 % circular orrbit: initial conditions
 V0 = sqrt(GMe./(Re+h)); % m/s 
-T = 2*pi*sqrt((Re+h)^3/GMe); % sec
+T = 1000*2*pi*sqrt((Re+h)^3/GMe); % sec
 
 % Transfer orbit: initial conditions
 r2 = 385000600;
@@ -29,13 +29,13 @@ options = odeset('RelTol',1e-12);
 
 % The time integration of the sat
 [t,y] = ode45(@satacc,[0 T],[0 Re+h 0 V0 0 0],options);
-[t2,y2] = ode45(@satacc,[0 T2],[0 Re+h 0 V0+DV1 0 0],options);
+%[t2,y2] = ode45(@satacc,[0 T2],[0 Re+h 0 V0+DV1 0 0],options);
 
 % earth
 [X,Y,Z] = sphere(40);
 
 figure
-plot3(y(:,1),y(:,2),y(:,3),'LineWidth',4)
+plot3(y(:,1),y(:,2),y(:,3), 'b')
 hold on
 surf(X*Re, Y*Re, Z*Re) % where (a,b,c) is center of the sphere
 plot3(y2(:,1),y2(:,2),y2(:,3),'r')

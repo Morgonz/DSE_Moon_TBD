@@ -49,6 +49,12 @@ Torbitmoon = 2*pi*sqrt((r3^3)/Mu_Moon)
 %tyears= tend1/(3600*24*365); %calculate transfer time in years
 %t2years = tend2/(3600*24*365);
 
+<<<<<<< HEAD
+%[t,y] = ode45(@StartingOrbitAcc,[0 10*T],[-201642375	237221957.5	0	-606.4649404	-1043.191023	0	-247843716.9	284494001.5	0	-776.6183011	-689.085314	0],options1); %Starting orbit of the satellite
+[t,y,te] = ode45(@LowThrustAcc,[0 4*T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V0*sin(theta*(pi/180)) V0*cos(theta*(pi/180))  0 rM 0 0 0 vM 0],options2); %Transfer orbit
+[t3,y3] = ode45(@StartingOrbitAcc,[0 T/5],[y(end,1) y(end,2) y(end,3) y(end,4) y(end,5) y(end,6) y(end,7) y(end,8) y(end,9) y(end,10) y(end,11) y(end,12)],options1); %Starting orbit of the satellite
+=======
+>>>>>>> origin/master
 %defining the sphere of the Earth
 [X,Y,Z] = sphere(40);
 
@@ -56,7 +62,12 @@ Torbitmoon = 2*pi*sqrt((r3^3)/Mu_Moon)
 figure
 %plot3(y(:,1),y(:,2),y(:,3),'b','DisplayName','S/C') %Low-Earth orbit of the satellite
 hold on
+
+
+
+=======
 axis equal
+>>>>>>> origin/master
 %%%% plotting in Moon reference frame %%%%
 %{
 plot(y1(:,1)-y1(:,7), y1(:,2)-y1(:,8),'r')
@@ -76,19 +87,10 @@ plot3(y1(:,1),y1(:,2),y1(:,3),'g','DisplayName','Circular Moon Orbit') %Transfer
 plot3(y1(1,1),y1(1,2), y1(1,3),'go','DisplayName','Entering Circular Orbit')
 %}
 
-%plot3(y3(:,1),y3(:,2),y3(:,3),'c') %orbit during coasting
-%plot3(y3(:,7),y3(:,8),y3(:,9),'r')%Orbit of the Moon during coasting
-surf(X*R_Earth, Y*R_Earth, Z*R_Earth) % where (a,b,c) is center of the sphere
-%surf(X*R_Moon, Y*R_Moon, Z*R_Moon) % where (a,b,c) is center of the sphere
-hold off
-xlabel('x [m]')
-ylabel('y [m]')
-zlabel('z [m]')
 
 
 legend('show')
 axis equal
-
 
 
 

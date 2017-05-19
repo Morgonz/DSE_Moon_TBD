@@ -24,9 +24,10 @@ V1 = V0+DV1; %velocity just after the initial burn
 theta = -114; %deg angle of initial position of satellite with respect to positive x-axis
 
 %insertion in the orbit
-xDV = -497.124553990224;
-yDV = 1221.84052559200;
+xDV = -93.1930113102339;
+yDV = 1315.91273534218;
 zDV = 0;
+DV2 = sqrt(xDV^2 + yDV^2);
 
 %orbit around the Moon
 h1 = 1000000; %m
@@ -52,6 +53,8 @@ plot3(y2(length(y2),7),y2(length(y2),8),y2(length(y2),9),'ro') %mark last locati
 plot3(y2(:,1),y2(:,2),y2(:,3),'g') %Transfer orbit
 plot3(y3(:,1),y3(:,2),y3(:,3),'c') %Orbit after DV2
 %plot3(y3(:,7),y3(:,8),y3(:,9),'r') %Orbit of the Moon after DV2
+
+
 hold off
 xlabel('x [m]')
 ylabel('y [m]')
@@ -63,6 +66,6 @@ axis equal
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
 value = sqrt((y2(1)-y2(7))^2 + (y2(2)-y2(8))^2 + (y2(3)-y2(9))^2)-2737000;
 isterminal = 1;
-direction = 1;
+direction = 0;
 end
 
