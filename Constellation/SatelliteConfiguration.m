@@ -4,7 +4,7 @@
 h = 2000e3; %Network satellite height [m]
 i = deg2rad(5); %Elevation angle
 
-S_FOV = deg2rad(40/2); %Satellite field of view
+S_FOV = deg2rad(50/2); %Satellite field of view
 R_FOV = deg2rad(120/2); %Rover field of view
 
 %Moon parameters
