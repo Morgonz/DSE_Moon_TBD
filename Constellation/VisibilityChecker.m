@@ -6,7 +6,7 @@ close all;
 %% Create Moon Mesh
 Rm  = 1738100; % [m]
 
-[X,Y,Z] = sphere(500);
+[X,Y,Z] = sphere(200);
 X = reshape(X,length(X)*length(X),1).*Rm;
 Y = reshape(Y,length(Y)*length(Y),1).*Rm;
 Z = reshape(Z,length(Z)*length(Z),1).*Rm;
@@ -36,11 +36,11 @@ rel_loc = (rel_loc~=0)*Rm+rel_loc;
 ele_ang = deg2rad(5); % [rad]
 
 % Network
-S_rec   = deg2rad(60); % [rad] half beam angle when satellite receives data from rover
-max_dist_G_rec = (norm(sat_loc(1,:))-Rm)/cos(S_rec)-200000; % [m] Max distance at S_rec to close budget
+S_rec   = deg2rad(45); % [rad] half beam angle when satellite receives data from rover
+max_dist_G_rec = 1200e3; % (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
 
-S_tra   = deg2rad(60); % [rad] half beam angle when satellite sends data to rover
-max_dist_S_rec = (norm(sat_loc(1,:))-Rm)/cos(S_tra)-200000; % [m] Max distance at S_rec to close budget
+S_tra   = deg2rad(45); % [rad] half beam angle when satellite sends data to rover
+max_dist_S_rec = 1200e3; % (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
 
 % Relay
 R_rec   = deg2rad(25); % [rad] half beam angle when relay receives data from network
@@ -116,9 +116,9 @@ end
 
 zeroes = sum(GS_vis_list(:)==0)/length(GS_vis_list)*100;
 ones = sum(GS_vis_list(:)==1)/length(GS_vis_list)*100;
-rest = sum(GS_vis_list(:)>1)/length(GS_vis_list)*100;
-coverage_perc = [zeroes ones rest];
-disp(coverage_perc)
+rest = sum(GS_vis_list(:)>2)/length(GS_vis_list)*100;
+notice_fin = [num2str(zeroes) ' ' num2str(ones) ' ' num2str(rest) ' R_sat: ' num2str(norm(sat_loc(1,:))-Rm) ' max dist: ' num2str(max_dist_S_rec) ' angle: ' num2str(rad2deg(S_rec))];
+disp(notice_fin)
 
    
 

@@ -7,7 +7,7 @@
 %https://web.archive.org/web/20070305183925/http://sunearth.gsfc.nasa.gov/eclipse/LEcat/LE2001-2100.html
 
 %function input
-h = 400e3; % [m]
+h = 700e3; % [m]
 P_req = 128; % [W]
 P_inc = 1400; % [W/m^2] incoming power
 V = 12; % [Volt]
@@ -18,7 +18,7 @@ lifetime = 15*365.25*24*3600;
 M_moon = 7.342e22; % [kg]
 M_earth = 5.97219e24; % [kg]
 G = 6.67408e-11;
-R_M = 1737.1e3; % [m]
+R_M = 1738.1e3; % [m]
 R_E = 6378.136e3; % [m]
 R_S = 695700e3; % [m]
 d_EM = 384400e3; % [m]
@@ -54,7 +54,7 @@ PEN_time = PEN_eclipse + PEN_sun;
 
 SER_PEN = PEN_eclipse/PEN_time;
 
-freq_PEN = (8*T_penumbral/2 + 13*T_penumbral/2)/lifetime
+freq_PEN = (8*T_penumbral/2 + 13*T_penumbral/2)/lifetime;
 
 %% Worst case: Moon eclipse into Earth eclipse with one additional Moon eclipse
 ea_angle = 2*atan(R_M/d_EM);
@@ -76,14 +76,16 @@ freq_MAX = (890*60)/lifetime;
 DOD_bat = 0.8; % Depth of discharge
 e_sol = 0.20; %solar panel efficiency
 e_bat = 0.7*0.6; %battery charging * discharging efficiency
-SER_USED = SER_PEN
+SER_USED = SER_simple;
 %Power calc (simulink integration?)
 E_req = P_req * T; %[J] energy per orbit
 P_gen = P_req/(1-SER_USED);
-A_sol = ((P_req/(1-SER_USED))/e_sol)/P_inc % [W] energy receival required
-E_bat = P_req * SER_USED*T / e_bat / DOD_bat % battery size requirement
-C_bat = E_bat/3600/V % [Ah]
+A_sol = ((P_req/(1-SER_USED))/e_sol)/P_inc; % [W] energy receival required
+E_bat = P_req * SER_USED*T / e_bat / DOD_bat; % battery size requirement
+C_bat = E_bat/3600/V; % [Ah]
 
 A_sol_wc = ((P_req/(1-SER_MAX))/e_sol)/P_inc;
 E_bat_wc = P_req * SER_MAX*T / e_bat / DOD_bat;
 
+notice_pwr = ['A = ' num2str(A_sol) ' C_bat = ' num2str(C_bat) ' DownFrac = ' num2str(freq_MAX+freq_PEN)];
+disp(notice_pwr)

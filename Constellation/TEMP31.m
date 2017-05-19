@@ -1,17 +1,17 @@
 %walkerdeltagenerator: generate walker delta orbit parameters based on
 t = 25; % time form 1-100 for one orbit period
-i = 65;
+i = 66;
 T = 72;
-P = 9;
+P = 12;
 F = 1;
-h = 600e3;
+h = 700e3;
 %input requirements:
 % i = inclination [deg]
 % n = amount of orbit planes
 % p = amount of sats per orbit
 % h = altitude from Moon surface
 
-Rm = 1737.1e3;
+Rm = 1738.1e3;
 e = 0;
 omega = 0;
 %i calculate from polar coverage
