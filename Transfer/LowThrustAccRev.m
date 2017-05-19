@@ -32,7 +32,8 @@ Mprop = 1000; %kg propellant mass estimation
 m = 3000; %kg initial mass
 
 %thrust force
-N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
+%N = 7*0.09; %N PPS-1350 Hall effect 7 thrusters for same dry mass-thruster ratio as SMART-1
+N = 0.43;
 aN = N/m; %acceleration caused by the thrust force
 
 xa = asE.* xp + asM.*(xp-xM) - aN*(xv/v); %accelaration in x-direction of the satellite

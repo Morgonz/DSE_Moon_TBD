@@ -87,12 +87,30 @@ plot3(y1(:,1),y1(:,2),y1(:,3),'g','DisplayName','Circular Moon Orbit') %Transfer
 plot3(y1(1,1),y1(1,2), y1(1,3),'go','DisplayName','Entering Circular Orbit')
 %}
 
+%plot3(y3(:,1),y3(:,2),y3(:,3),'c') %orbit during coasting
+%plot3(y3(:,7),y3(:,8),y3(:,9),'r')%Orbit of the Moon during coasting
+<<<<<<< HEAD
+>>>>>>> origin/master
+%surf(X*R_Earth, Y*R_Earth, Z*R_Earth) % where (a,b,c) is center of the sphere
+surf(X*R_Moon, Y*R_Moon, Z*R_Moon) % where (a,b,c) is center of the sphere
+=======
+surf(X*R_Earth, Y*R_Earth, Z*R_Earth) % where (a,b,c) is center of the sphere
+%surf(X*R_Moon, Y*R_Moon, Z*R_Moon) % where (a,b,c) is center of the sphere
+>>>>>>> origin/master
+hold off
+xlabel('x [m]')
+ylabel('y [m]')
+zlabel('z [m]')
 
 
 legend('show')
 axis equal
 
+<<<<<<< HEAD
+=======
 
+
+>>>>>>> origin/master
 
 %Define Event Function
 function [value,isterminal,direction] = L1fromEarth(t,y)

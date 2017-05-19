@@ -1,16 +1,17 @@
 %walkerdeltagenerator: generate walker delta orbit parameters based on
-i = 60;
+t = 25; % time form 1-100 for one orbit period
+i = 66;
 T = 72;
 P = 12;
 F = 1;
-h = 600e3;
+h = 700e3;
 %input requirements:
 % i = inclination [deg]
 % n = amount of orbit planes
 % p = amount of sats per orbit
 % h = altitude from Moon surface
 
-Rm = 1737.1e3;
+Rm = 1738.1e3;
 e = 0;
 omega = 0;
 %i calculate from polar coverage
@@ -23,13 +24,17 @@ n_sat = T/P;
 %F = P-1-T/P; % F = 0:P-1
 F_check = P-1-T/P;
 notice_F = [num2str(F) ' vs ' num2str(F_check)];
-disp(notice_F)
+disp(notice_F) 
+% if F_check<0
+%     F = F_check + P
+% end
+    
 
     
 
 % Orbit plane & sat phasing spacings
-deltaRAAN = 2*pi/P
-deltaphase = 2*pi/T*F
+deltaRAAN = 2*pi/P;
+deltaphase = 2*pi/T*F;
 
 figure;
 hold on;
@@ -39,7 +44,7 @@ for kdx=1:T
     phase = deltaphase*(kdx-1);
     [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
     
-    scatter3(X(1),Y(1),Z(1),20,'filled');
+    scatter3(X(t),Y(t),Z(t),20,'filled');
     plot3(X,Y,Z,'LineWidth',1);
     ID = ID + 1;
     loc_sat = [loc_sat;X(1) Y(1) Z(1) ID];

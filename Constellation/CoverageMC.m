@@ -1,7 +1,7 @@
 %input parameters
 n = 6; % orbit planes
 p = 12; % sats/orbit
-%ASSUME 1 SAT FAILS PER YEAR
+%ASSUME 1 SAT FAILS PER YEAR (SMAD)
 nsf = 1/(n*p); %#sats failing per year
 prob = 1-nsf/(365); %1- #sats failing per hour = prob
 
@@ -35,7 +35,7 @@ histlist = [];
 failtime = 0;
 brokenID = [];
 
-for cycles=1:10000
+for cycles=1:100
     sysfail = 0;
     count = 0;
     while count < 1&&sysfail==0
