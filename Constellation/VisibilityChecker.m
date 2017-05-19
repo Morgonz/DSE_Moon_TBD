@@ -4,7 +4,7 @@ close all;
 %clc;
 
 %% Create Moon Mesh
-Rm  = 1738100; % [m]
+Rm  = 1738100+700e3; % [m]
 
 [X,Y,Z] = sphere(200);
 X = reshape(X,length(X)*length(X),1).*Rm;
@@ -20,7 +20,7 @@ Moon_mesh = [X,Y,Z]; % Npoints x 3
 %sat_loc = (sat_loc~=0)*Rm+sat_loc;
 
 %sat_loc = walkerdeltagenerator(60,2,3,400e3);
-sat_loc = loc_sat(:,1:3);
+sat_loc = loc_sat(:,1:3)
 
 relay = 1;
 % Relay
@@ -36,11 +36,11 @@ rel_loc = (rel_loc~=0)*Rm+rel_loc;
 ele_ang = deg2rad(5); % [rad]
 
 % Network
-S_rec   = deg2rad(45); % [rad] half beam angle when satellite receives data from rover
-max_dist_G_rec = 1200e3; % (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
+S_rec   = deg2rad(20); % [rad] half beam angle when satellite receives data from rover
+max_dist_G_rec = 12000e3; % (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
 
-S_tra   = deg2rad(45); % [rad] half beam angle when satellite sends data to rover
-max_dist_S_rec = 1200e3; % (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
+S_tra   = deg2rad(20); % [rad] half beam angle when satellite sends data to rover
+max_dist_S_rec = 12000e3; % (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
 
 % Relay
 R_rec   = deg2rad(25); % [rad] half beam angle when relay receives data from network
@@ -116,22 +116,22 @@ end
 
 zeroes = sum(GS_vis_list(:)==0)/length(GS_vis_list)*100;
 ones = sum(GS_vis_list(:)==1)/length(GS_vis_list)*100;
-rest = sum(GS_vis_list(:)>2)/length(GS_vis_list)*100;
+rest = sum(GS_vis_list(:)>1)/length(GS_vis_list)*100;
 notice_fin = [num2str(zeroes) ' ' num2str(ones) ' ' num2str(rest) ' R_sat: ' num2str(norm(sat_loc(1,:))-Rm) ' max dist: ' num2str(max_dist_S_rec) ' angle: ' num2str(rad2deg(S_rec))];
 disp(notice_fin)
 
    
 
 %% Plotting
-figure
-scatter3(X,Y,Z,1,SG_vis_list)
-hold on
-scatter3(sat_loc(:,1),sat_loc(:,2),sat_loc(:,3),10, SR_vis_list)
-% if relay==0
-%     scatter3(rel_loc(:,1),rel_loc(:,2),rel_loc(:,3),20,[0,0,0,0])
-% end
-colorbar
-axis equal
+% figure
+% scatter3(X,Y,Z,1,SG_vis_list)
+% hold on
+% scatter3(sat_loc(:,1),sat_loc(:,2),sat_loc(:,3),10, SR_vis_list)
+% % if relay==0
+% %     scatter3(rel_loc(:,1),rel_loc(:,2),rel_loc(:,3),20,[0,0,0,0])
+% % end
+% colorbar
+% axis equal
 
 figure
 scatter3(X,Y,Z,1,GS_vis_list)
