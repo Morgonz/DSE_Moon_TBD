@@ -14,7 +14,7 @@ r1 = R_Earth + h; %m
 
 %orbit of the Moon
 rM = 385000600; %m
-vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
+vM = sqrt((Mu_Moon+Mu_Earth)/rM); %m/s speed of rotation of the Moon
 
 %orbit at the Moon
 h3 = 9000000; %m
@@ -26,16 +26,23 @@ options2 = odeset('RelTol', 1e-9, 'Events', @CrossMoonOrbit);
 T = 10000000000; %s time of simulation
 Speed = [];
 N = 0.43;
-
+% for N = linspace(0.1,1,91)
+%     [t,y,te] = ode45(@(t,y)LowThrustAccVarRev(t,y,N),[0 -T], [rM+r3 0 0 0 vM+v3 0 rM 0 0 0 vM 0],options2);
+%     if abs(te)>10
+%         Speed = [Speed; N -te y(end,:)];
+%     end
+%     disp(N)
+% end
 [t,y,te] = ode45(@(t,y)LowThrustAccVarRev(t,y,N),[0 -T], [rM+r3 0 0 0 vM+v3 0 rM 0 0 0 vM 0],options2);
-
-
- figure
- plot(y(:,1)-y(:,7),y(:,2)-y(:,8))
- axis equal
- xlabel('x [m]')
- ylabel('y [m]')
- title('Phase 2: Insertion into Moon orbit')
+Vstart = sqrt(y(1,4)^2 + y(1,5)^2);
+Vend = sqrt(y(end,4)^2 + y(end,5)^2);
+disp(Vstart-Vend)
+%  figure
+%  plot(y(:,1)-y(:,7),y(:,2)-y(:,8))
+%  axis equal
+%  xlabel('x [m]')
+%  ylabel('y [m]')
+%  title('Phase 2: Insertion into Moon orbit')
 
 
 %Define Event Function

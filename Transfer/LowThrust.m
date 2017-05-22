@@ -17,7 +17,7 @@ theta_SC = 0; %deg start angle of satellite around the Moon, measured with respe
 
 %orbit of the Moon
 rM = 385000600; %m
-vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
+vM = sqrt((Mu_Earth+Mu_Moon)/rM); %m/s speed of rotation of the Moon
 
 %orbit at the Moon
 h3 = 9000000; %m

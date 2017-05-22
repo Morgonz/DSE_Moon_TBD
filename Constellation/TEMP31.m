@@ -1,6 +1,6 @@
 %walkerdeltagenerator: generate walker delta orbit parameters based on
-t = 25; % time form 1-100 for one orbit period
-i = 66;
+t = 50; % time form 1-100 for one orbit period
+i = 67;
 T = 72;
 P = 12;
 F = 1;
@@ -44,8 +44,8 @@ for kdx=1:T
     phase = deltaphase*(kdx-1);
     [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
     
-    scatter3(X(t),Y(t),Z(t),20,'filled');
-    plot3(X,Y,Z,'LineWidth',1);
+    scatter3(X(t),Y(t),Z(t),25,'filled');
+    plot3(X,Y,Z,'LineWidth',1.25);
     ID = ID + 1;
     loc_sat = [loc_sat;X(1) Y(1) Z(1) ID];
 

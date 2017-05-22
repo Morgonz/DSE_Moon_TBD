@@ -1,7 +1,7 @@
 function [X,Y,Z] = keplerplot(e,inc,RAAN,omega,phase,h)
 %keplerplot: Translate kepler input into 3d plot [X,Y,Z]
 
-Rm = 1737.1e3; %[m]
+Rm = 1738.1e3; %[m]
 
 Rs = Rm+h; %[m] minimum altitude (periapsis)
 a = Rs/(1-e);
