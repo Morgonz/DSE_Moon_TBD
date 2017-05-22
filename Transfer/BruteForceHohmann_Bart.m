@@ -22,10 +22,9 @@ for theta = linspace(-180,180,361)
     V1 = V0+DV1; %velocity just after the initial burn
 
     %elliptic orbit around the Moon
-    rp = 2436000; %m apocentre
-    ra = 10000000; %m pericentre
-    a_e = (ra+rp)/2; %m semi-major axis of the Moon
-    V3 = sqrt((2*Mu_Moon/rp)-(Mu_Moon/a_e)); %m/s orbiting speed in Moon reference frame
+    h3 = 1629000; %km frozen orbit
+    r3 = h3+R_Moon;
+    V3 = sqrt(Mu_Moon/r3);
 
 
     %options of the integrator

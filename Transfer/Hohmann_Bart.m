@@ -24,8 +24,8 @@ V1 = V0+DV1; %velocity just after the initial burn
 theta = -124; %deg angle of initial position of satellite with respect to positive x-axis
 
 %insertion in the orbit
-xDV = -491.849842475467;
-yDV = -984.659698604389;
+xDV = -1038.47880178316;
+yDV = -756.773893295337;
 zDV = 0;
 DV2 = sqrt(xDV^2 + yDV^2);
 
@@ -35,8 +35,8 @@ options1 = odeset('RelTol', 1e-12, 'Events', @CrossMoonOrbit);
 
 [t,y] = ode45(@HohmannAcc,[0 T],[0 r1 0 -V0 0 0 rM 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3] = ode45(@HohmannAcc,[t2(end) t2(end)+T/10], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
-[X,Y,Z] = sphere(40);
+[t3,y3] = ode45(@HohmannAcc,[t2(end) t2(end)+T/5], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+[X,Y,Z] = sphere(10);
 
 ytotal = [y2;y3];
 ttotal = [t2;t3];
@@ -49,7 +49,13 @@ yMrot = ytotal(:,7).*sin(-ttotal(:).*((2*pi)/TMoon)) + ytotal(:,8).*cos(-ttotal(
 
 figure 
 hold on
-plot(xrot,yrot)
+plot(ytotal(:,1)-ytotal(:,7)+rM,ytotal(:,2)-ytotal(:,8))
+surf(X*R_Earth, Y*R_Earth, Z*R_Earth)
+%surf(X*R_Moon+rM, Y*R_Moon, Z*R_Moon)
+xlabel('x [m]')
+ylabel('y [m]')
+title('Transfer to the Moon-centered frozen orbit')
+axis equal
 hold off
 
 
@@ -68,7 +74,7 @@ hold off
 % xlabel('x [m]')
 % ylabel('y [m]')
 % zlabel('z [m]')
-% title('Transfer to the Moon-centered elliptical orbit')
+% title('Transfer to the Moon-centered frozen orbit')
 % axis equal
 
 

@@ -27,7 +27,7 @@ asM = -(Mu_Moon/(dSM^3)); %acceleration of the satellite due to the Moon
 aM  = -((Mu_Earth + Mu_Moon)/(pM^3)); %acceleration of the Moon
 
 %mass calculations
-m = 1000; %kg initial mass
+m = 2860; %kg initial mass
 
 %thrust force
 aN = N/m; %acceleration caused by the thrust force
