@@ -12,14 +12,14 @@ h = 500000; %m
 V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
 r1 = R_Earth + h; %m
 theta = 0; %deg angle the satellite is at the start of the simulation with respect to the positive x-axis
-theta_SC = 0; %deg start angle of satellite around the Moon, measured with respect to origin of the Mooon in the positive x-axis
+theta_SC = 80; %deg start angle of satellite around the Moon, measured with respect to origin of the Mooon in the positive x-axis
 
 
 %orbit of the Moon
 rM = 385000600; %m
 vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
 
-%orbit at the Moon
+%orbit at the high Moon
 h3 = 9000000; %m
 r3 = R_Moon + h3; %m
 v3 = sqrt(Mu_Moon/r3); %m/s
@@ -29,8 +29,6 @@ v3 = sqrt(Mu_Moon/r3); %m/s
 options1 = odeset('RelTol', 1e-9);
 options2 = odeset('RelTol', 1e-9, 'Events', @L1fromEarth);
 options3 = odeset('RelTol', 1e-9, 'Events', @TwoEvents);
-
-
 
 T = 5000000; %s time of simulation
 Torbitmoon = 2*pi*sqrt((r3^3)/Mu_Moon)
@@ -44,8 +42,7 @@ end
  %}
 
 [t1,y1] = ode45(@StartingOrbitAcc,[ 0 2*Torbitmoon ],[rM+r3*cos(theta_SC*(pi/180)) r3*sin(theta_SC*(pi/180)) 0  -v3*sin(theta_SC*(pi/180)) vM+(v3*cos(theta_SC*(pi/180))) 0 rM 0 0 0 vM 0],options1);
-[t,y,tend2] = ode45(@LowThrustAccRev,[0 -T*2],[y1(1,1) y1(1,2) y1(1,3) y1(1,4) y1(1,5) y1(1,6) y1(1,7) y1(1,8) y1(1,9) y1(1,10) y1(1,11) y1(1,12)],options3);
-    
+[t,y,tend2] = ode45(@LowThrustAccRev,[0 -T*2],[y1(1,1) y1(1,2) y1(1,3) y1(1,4) y1(1,5) y1(1,6) y1(1,7) y1(1,8) y1(1,9) y1(1,10) y1(1,11) y1(1,12)],options3);    
 %[t,y,tend2] = ode45(@LowThrustAccRev,[0 -T*1.5],[r3*cos(theta_SC*(pi/180)) rM+r3*sin(theta_SC*(pi/180)) 0  -vM-v3*sin(theta*(pi/180)) v3*cos(theta*(pi/180)) 0 0 rM 0 -vM 0 0],options3);
 
 %%%%%% Calculate Transfer times
@@ -53,19 +50,12 @@ end
 %t2years = tend2/(3600*24*365);
 
 
-%[t,y] = ode45(@StartingOrbitAcc,[0 10*T],[-201642375	237221957.5	0	-606.4649404	-1043.191023	0	-247843716.9	284494001.5	0	-776.6183011	-689.085314	0],options1); %Starting orbit of the satellite
-[t,y,te] = ode45(@LowThrustAcc,[0 4*T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V0*sin(theta*(pi/180)) V0*cos(theta*(pi/180))  0 rM 0 0 0 vM 0],options2); %Transfer orbit
-[t3,y3] = ode45(@StartingOrbitAcc,[0 T/5],[y(end,1) y(end,2) y(end,3) y(end,4) y(end,5) y(end,6) y(end,7) y(end,8) y(end,9) y(end,10) y(end,11) y(end,12)],options1); %Starting orbit of the satellite
-
-
 %defining the sphere of the Earth
 [X,Y,Z] = sphere(40);
 
 %plotting the figure
 figure
-%plot3(y(:,1),y(:,2),y(:,3),'b','DisplayName','S/C') %Low-Earth orbit of the satellite
 hold on
-
 axis equal
 
 
@@ -88,6 +78,7 @@ plot3(y1(:,1),y1(:,2),y1(:,3),'g','DisplayName','Circular Moon Orbit') %Transfer
 plot3(y1(1,1),y1(1,2), y1(1,3),'go','DisplayName','Entering Circular Orbit')
 %}
 
+surf(X*R_Earth,Y*R_Earth, Z*R_Earth)
 legend('show')
 axis equal
 
