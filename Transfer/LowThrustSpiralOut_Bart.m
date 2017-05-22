@@ -9,7 +9,7 @@ R_Moon = 1737000; %m
 
 %Circular Orbit initial conditions
 h = 500000; %m
-V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
+V0 = sqrt((Mu_Earth+Mu_Moon)/(R_Earth + h)); %m/s
 r1 = R_Earth + h; %m
 
 %orbit of the Moon

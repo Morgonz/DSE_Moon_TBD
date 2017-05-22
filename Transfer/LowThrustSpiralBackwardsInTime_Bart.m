@@ -14,7 +14,7 @@ r1 = R_Earth + h; %m
 
 %orbit of the Moon
 rM = 385000600; %m
-vM = sqrt(Mu_Earth/rM); %m/s speed of rotation of the Moon
+vM = sqrt((Mu_Moon+Mu_Earth)/rM); %m/s speed of rotation of the Moon
 
 %orbit at the Moon
 h3 = 9000000; %m
