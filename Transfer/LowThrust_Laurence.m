@@ -12,7 +12,7 @@ h = 500000; %m
 V0 = sqrt(Mu_Earth/(R_Earth + h)); %m/s
 r1 = R_Earth + h; %m
 theta = 0; %deg angle the satellite is at the start of the simulation with respect to the positive x-axis
-theta_SC = 80; %deg start angle of satellite around the Moon, measured with respect to origin of the Mooon in the positive x-axis
+theta_SC = 320; %deg start angle of satellite around the Moon, measured with respect to origin of the Mooon in the positive x-axis
 
 
 %orbit of the Moon
@@ -48,6 +48,7 @@ end
 %%%%%% Calculate Transfer times
 %tyears= tend1/(3600*24*365); %calculate transfer time in years
 %t2years = tend2/(3600*24*365);
+
 
 
 %defining the sphere of the Earth
