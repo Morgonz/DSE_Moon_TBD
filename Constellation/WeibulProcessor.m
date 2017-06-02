@@ -1,7 +1,8 @@
-function [ h ] = WeibulProcessor( lifetime, datamode )
+function [ h,t ] = WeibulProcessor( lifetime, datamode )
 %WeibulProcessor Generate hazard curve on basis of selected statistical data
-%   Detailed explanation goes here
-%% Weibull setup
+%   Lifetime in years, datamode inputs are: micro, 2000, comms, comp
+
+%% Weibul data selection
 datamode = string(datamode); %micro, 2000, comms, comp 
 
 t = 1:365*lifetime; %Time in days
@@ -43,26 +44,27 @@ elseif strcmp('comms',datamode)
     eta = 1629; % days
     disp('datamode = comp')
 else
-    disp('datamode not recognised')
+    error('datamode not recognised. Please use "micro", "2000", "comms" or "comp" as datamode input.')
+    
 end
+
+%% Generate Weibul curve and determine hazard rate
 R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
 F = 1-R;
 f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
 h = f./R;
 
-% labelloc = 0:365:365*lifetime;
+
 % plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,'LineWidth',1.5);
 % legend('Microsat','After 2000','comms','comp')
 % legend('prob density','prob dist','Reliability')
 % plot(t,f,t,F,t,R,'LineWidth',1.5)
 % 
-% 
+% labelloc = 0:365:365*lifetime;
 % xlim([0 t(end)])
 % xticks(labelloc)
 % xticklabels({'0','1','2','3','4','5'})
 % xlabel('Time [years]')
 % ylabel('Probability [-]')
 
-
 end
-

@@ -1,16 +1,16 @@
 %% input parameters
 n = 6; % orbit planes
 p = 6; % sats/orbit
+lifetime = 5; %years
+n_cycles = 100;
 
-T_resend = 183; %days in 6 months of resend time
-T_replace = 10; %one month
+%Request weibulcurve
+prob = 1-WeibulProcessor(lifetime,'micro');
 
-launchnew = 0;
-n_spare_start = 24;
-launch_thresh = 8;
-n_restock = 12;
+T_replace = 5; % time to replace a broken satellite
+t = 1:365*lifetime;
+
 nsamples = t(end);
-Tsend = 0;
 
 %Construct satellite IDs
 orbits = 100:100:n*100;
@@ -28,20 +28,16 @@ stats = [];
 broken = [];
 sysfail = 0;
 maxbroken = [];
-count = 0;
 histlist = [];
-failtime = 0;
+sysfailtime = 0;
 brokenID = [];
 
-n_cycles = 10;
+
 faillist = zeros(t(end),n_cycles);
-sparelist = zeros(t(end),n_cycles);
-launchlist = zeros(t(end),n_cycles);
-n_l = 0;
 satfail = 0;
 for cycles=1:n_cycles
+    satfail = 0;
     sysfail = 0;
-    count = 0;
     failures = zeros(size(ID));
     status = zeros(size(ID));
     rows = [];
@@ -49,32 +45,14 @@ for cycles=1:n_cycles
     failure_IDs = [];
     stats = [];
     broken = [];
-    launchnew = 0;
-    n_spare = n_spare_start;
-    Tsend = 0;
 
     for s=1:nsamples
-        prob = 1-h(s);
-        sparelist(s,cycles) = n_spare;
-        launchlist(s,cycles) = n_l;
         faillist(s,cycles) = satfail;
         replaced = [];
         sample = rand(size(ID));%exprnd(0.0950,size(ID)); % get random sample
-        if launchnew == 1 %if a launch is being conducted, update launch arrival timer
-            Tsend = Tsend + 1;
-            if Tsend >= T_resend %if launch arrived, update spares
-                n_spare = n_spare + n_restock;
-                Tsend = 0;
-                launchnew = 0;
-                n_l = n_l + 1;
-                %disp('LAUNCH ARRIVED')
-            end
 
-        end
-        prob
-
-        if any(any(sample>prob)) % if initial failure occurs
-            failmat = ID.*(sample>prob);
+        if any(any(sample>prob(s))) % if initial failure occurs
+            failmat = ID.*(sample>prob(s));
             failure_ID = (failmat(failmat~=0));
 
             [row,col] = find(failmat);
@@ -91,7 +69,7 @@ for cycles=1:n_cycles
                     cols = [cols;col];
                     failure_IDs = [failure_IDs;failure_ID];
                     notice_satfail = ['Sats ' num2str(failure_ID') ' have failed. '];
-                    disp(notice_satfail)
+                    %disp(notice_satfail)
 
                     stats = [rows cols failure_IDs]';
                 end
@@ -102,23 +80,19 @@ for cycles=1:n_cycles
         for l=1:size(stats,2)
             e = stats(:,l);
             %Repair progress and spares check
-            if n_spare>0
-                if status(e(1),e(2))>=T_replace %sat is replaced
-                    n_spare = n_spare - 1; %reduced spare count
-                    if n_spare <= launch_thresh %if spares reaches launch lvl
-                        launchnew = 1;
 
-                        %disp('INITIATE LAUNCH')
-                    end
-                    notice_repair = ['Sat ' num2str(e(3)) ' is replaced. ' num2str(n_spare) ' spares left.'];
-                    disp(notice_repair)
-                    replaced = [replaced l];
-                    status(e(1),e(2)) = 0;
-                else
-                    status(e(1),e(2)) = status(e(1),e(2)) + 1;
-                end
+            if status(e(1),e(2))>=T_replace %sat is replaced
+
+                notice_repair = ['Sat ' num2str(e(3)) ' is replaced.'];
+                %disp(notice_repair)
+                replaced = [replaced l];
+                status(e(1),e(2)) = 0;
+            else
+                status(e(1),e(2)) = status(e(1),e(2)) + 1;
             end
+
         end
+
         %Remove repaired sats from the stat register
         %stats(:,replaced)=[];
         rows(replaced) = [];
@@ -139,10 +113,10 @@ for cycles=1:n_cycles
 
 
             for diff=IDdiff
-                if abs(diff)==100||abs(diff)==1||abs(diff)==11||abs(diff)==500
+                if abs(diff)==100||abs(diff)==100*(size(ID,1)-1)||abs(diff)==1||abs(diff)==size(ID,2)-1
                     notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
                     sysfail = 1;
-                    failtime = failtime + 1;
+                    sysfailtime = sysfailtime + 1;
                     bID = failure_IDs;
 
                 end
@@ -157,20 +131,27 @@ for cycles=1:n_cycles
     end
     maxbroken = [maxbroken max(broken)];
     
-    histlist = [histlist count*sysfail];
+    histlist = [histlist sysfail];
 end
-notice_end = ['Total non-100% time%: ' num2str(failtime/(365*15)*100*sum(histlist)/n_cycles) '. Area% not covered: ' num2str(failtime/(365*15*n*p)*2*100*sum(histlist)/n_cycles) '. Max sats broken simultaneously: ' num2str(max(maxbroken))];
+downfrac = mean(histlist);
+timefrac = sysfailtime/(365*lifetime*n_cycles);
+areafrac = timefrac*2/(n*p);
+notice_end = ['Total cycle sysfail%: ' num2str(downfrac*100) ' Total non-100% time%: ' num2str(timefrac*100) '. Area% not covered: ' num2str(areafrac*100)];
 disp(notice_end)
-figure(1);
-hist(histlist)
-figure(2);
+
+
 yyaxis left
-plot(1:length(sparelist),sparelist,'LineWidth',1.5)
-title('Spares status','FontSize',16)
+plot(1:length(prob),prob,'LineWidth',1.5)
+% title('Hazard rate','FontSize',16)
 xlabel('Time [days]','FontSize',12)
-ylabel('Spares remaining','FontSize',12)
+ylabel('Hazard rate','FontSize',12)
 
 yyaxis right
-plot(1:length(faillist),faillist,'LineWidth',1.5)
+flist = mean(faillist,2);
+plot(1:length(flist),flist,'LineWidth',1.5)
 ylabel('Total broken satellites','FontSize',12)
-xlim([0 length(faillist)])
+labelloc = 0:365:365*lifetime;
+xlim([0 t(end)])
+xticks(labelloc)
+xticklabels({'0','1','2','3','4','5'})
+xlabel('Time [years]')
