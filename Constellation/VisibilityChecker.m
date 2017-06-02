@@ -1,12 +1,12 @@
 %% Visibility checker
 %clear all;
-close all;
+%close all;
 %clc;
 
 %% Create Moon Mesh
-Rm  = 1738100+700e3; % [m]
+Rm  = 1738100; % [m]
 
-[X,Y,Z] = sphere(200);
+[X,Y,Z] = sphere(400);
 X = reshape(X,length(X)*length(X),1).*Rm;
 Y = reshape(Y,length(Y)*length(Y),1).*Rm;
 Z = reshape(Z,length(Z)*length(Z),1).*Rm;
@@ -36,10 +36,10 @@ rel_loc = (rel_loc~=0)*Rm+rel_loc;
 ele_ang = deg2rad(5); % [rad]
 
 % Network
-S_rec   = deg2rad(20); % [rad] half beam angle when satellite receives data from rover
+S_rec   = deg2rad(60); % [rad] half beam angle when satellite receives data from rover
 max_dist_G_rec = 12000e3; % (norm(sat_loc(1,:))-Rm)/cos(S_rec); % [m] Max distance at S_rec to close budget
 
-S_tra   = deg2rad(20); % [rad] half beam angle when satellite sends data to rover
+S_tra   = deg2rad(60); % [rad] half beam angle when satellite sends data to rover
 max_dist_S_rec = 12000e3; % (norm(sat_loc(1,:))-Rm)/cos(S_tra); % [m] Max distance at S_rec to close budget
 
 % Relay

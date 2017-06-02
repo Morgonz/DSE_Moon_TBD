@@ -1,10 +1,10 @@
 %walkerdeltagenerator: generate walker delta orbit parameters based on
-t = 50; % time form 1-100 for one orbit period
+t = 1; % time form 1-100 for one orbit period
 i = 67;
 T = 72;
-P = 12;
+P = 6;
 F = 1;
-h = 700e3;
+h = 1627e3;
 %input requirements:
 % i = inclination [deg]
 % n = amount of orbit planes
@@ -36,12 +36,14 @@ disp(notice_F)
 deltaRAAN = 2*pi/P;
 deltaphase = 2*pi/T*F;
 
-figure;
+
 hold on;
+figure(1);
 loc_sat = [];
 for kdx=1:T
     RAAN = deltaRAAN*(kdx-1);
     phase = deltaphase*(kdx-1);
+
     [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
     
     scatter3(X(t),Y(t),Z(t),25,'filled');
@@ -81,13 +83,24 @@ end
 
 
 %plot moon sphere
+set(gca,'FontSize',20)
+set(gca,'XtickLabel',[],'YtickLabel',[]);
+set(gca,'visible','off')
+
 [p,q,r] = sphere(40);
 p = p.*Rm; q = q.*Rm; r = r.*Rm;
+xlabel('X [m]','FontSize',20);
+ylabel('Y [m]','FontSize',20);
+zlabel('Z [m]','FontSize',20);
 
 surf(p,q,r);hold on;
+
+box on
+grid on
 axis vis3d
 axis equal
 hold off;
+view(-45,5);
 % for k=1:nsat
 %   % Right ascension of ascending node, in radians
 %   thetao = ran0*deg2rad + 2*pi*(k-1)/nplanes;

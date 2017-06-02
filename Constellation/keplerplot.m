@@ -16,11 +16,11 @@ X = r.*(cos(RAAN).*cos(omega+theta)-sin(RAAN).*sin(omega+theta)*cos(inc));
 Y = r.*(sin(RAAN).*cos(omega+theta)+cos(RAAN).*sin(omega+theta)*cos(inc));
 Z = r.*(sin(inc).*sin(omega+theta));
 
-%%% Uncomment for single orbit plot
-%[p,q,r] = sphere(40);
-%p = p.*R_M; q = q.*R_M; r = r.*R_M;
-
-%surf(p,q,r);hold on;
+% %% Uncomment for single orbit plot
+% [p,q,r] = sphere(40);
+% p = p.*Rm; q = q.*Rm; r = r.*Rm;
+% 
+% surf(p,q,r);hold on;
 % plot3(X,Y,Z,'LineWidth',1.5);hold on;
 % scatter3(X(1),Y(1),Z(1),16);hold on;
 % axis vis3d
