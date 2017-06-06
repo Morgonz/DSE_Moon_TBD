@@ -1,4 +1,4 @@
-function yrot = RotatingFrame(state)
+function yrot = RotatingFrameSunEarthMoon(state)
 xE = state(:,1);
 yE = state(:,2);
 xM = state(:,7);
