@@ -2,11 +2,22 @@ clear all;
 close all;
 clc;
 
-%defining Mu from Nasa site (all 4 from: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html)
+Mu_Earth = 3.98574405E+14; %m^3 s^-2
+Mu_Sun = 1.327124E+20; %m^3 s^-2 from wikipedia
+R_Earth = 6371000; %m
+R_Sun = 695508000; %m https://solarsystem.nasa.gov/planets/sun/facts
+
+
+%defining Mu from Nasa site
+%G = 6.67408E-11
+%Mass_Earth = 5.9723E24
+%Mass_Sun = 
 Mu_Earth = 0.39860E+15
 Mu_Sun = 132712E+15
 R_Earth = 6371000; %m
-R_Sun = 695700000; %m  
+R_Sun = 695508000; %m https://solarsystem.nasa.gov/planets/sun/facts
+
+
 
 %Earth initial conditions
 rE = 149.60E+9; %m ditance Earth to Sun from: https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
