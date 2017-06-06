@@ -23,14 +23,13 @@ rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 options = odeset('RelTol', 1e-18);
 T = 10000000; %s
 
-[t,y] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 rE+rL-200000000 0 0 0 vE+vS/10 0],options);
+[t,y] = ode113(@SunEarthAcc, [0 10*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.068 vE+426 0],options);
 
 yrot = RotatingFrameSunEarth(y);
 
 figure
 hold on
 plot3(yrot(:,7),yrot(:,8),yrot(:,9))
-plot3(yrot(:,1),yrot(:,2),yr
 plot3(rE+rL,0,0,'c*')
 hold off
 xlabel('x [m]')

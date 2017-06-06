@@ -23,7 +23,7 @@ rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 options = odeset('RelTol', 1e-18);
 T = 10000000; %s
 
-[t,y] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 rE+rL-200000000 0 0 0 vE+vS/10 0],options);
+[t,y] = ode113(@SunEarthAcc, [0 2*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.0675 vE+426 0],options);
 
 yrot = RotatingFrameSunEarth(y);
 
