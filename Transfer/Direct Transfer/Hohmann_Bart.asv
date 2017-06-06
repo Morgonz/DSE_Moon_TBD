@@ -65,6 +65,9 @@ ylabel('y [m]')
 zlabel('z [m]')
 axis equal
 
+xcheck = y3(:,1)-y3(:,7);
+ycheck = y3(:,2)-y3(:,8);
+zcheck = y3(:,3)-y3(:,9);
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)

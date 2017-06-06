@@ -29,7 +29,7 @@ options = odeset('RelTol', 1e-12);
 T = 10000000; %s
 
 %integrator
-[t,y] = ode113(@SunEarthAcc, [0 T],[rE 0 0 0 vE 0 rE+rM 0 0 0 vE+vM 0 rE+rS 0 0 0 vE+vS 0],options);
+[t,y] = ode113(@SunEarthMoonAcc, [0 T],[rE 0 0 0 vE 0 rE+rM 0 0 0 vE+vM 0 rE+rS 0 0 0 vE+vS 0],options);
 
 
 %Earth-Sun Lagrangian points
