@@ -1,4 +1,4 @@
-function [ h,t ] = WeibulProcessor( lifetime, datamode )
+function [ h,t ] = WeibulProcessor( lifetime, datamode, plotall )
 %WeibulProcessor Generate hazard curve on basis of selected statistical data
 %   Lifetime in years, datamode inputs are: micro, 2000, comms, comp
 
@@ -54,17 +54,35 @@ F = 1-R;
 f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
 h = f./R;
 
+if plotall
+    figure;
+    plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,'LineWidth',1.5);
+    legend('Microsat','After 2000','comms','comp')
+    labelloc = 0:365:365*lifetime;
+    axis([0 t(end) 0 1])
+    xticks(labelloc)
+    xticklabels(0:lifetime)
+    xlabel('Time [years]')
+    ylabel('Probability [-]')
+    title('Probability distribution overview')
+    
+    figure;    
+    yyaxis left
+    plot(t,F,'LineWidth',1.5)
+    ylabel('Probability [-]')
+    
+    yyaxis right
+    plot(t,1-h,'LineWidth',1.5)
+    ylim([1-h(1) 1])
+    ylabel('1 - hazard rate [-]')
 
-% plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,'LineWidth',1.5);
-% legend('Microsat','After 2000','comms','comp')
-% legend('prob density','prob dist','Reliability')
-% plot(t,f,t,F,t,R,'LineWidth',1.5)
-% 
-% labelloc = 0:365:365*lifetime;
-% xlim([0 t(end)])
-% xticks(labelloc)
-% xticklabels({'0','1','2','3','4','5'})
-% xlabel('Time [years]')
-% ylabel('Probability [-]')
+    labelloc = 0:365:365*lifetime;
+    xlim([0 t(end)])
+    xticks(labelloc)
+    xticklabels(0:lifetime)
+    xlabel('Time [years]')
+    title('Selected mode details')
+    legend('prob density','Reliability','Location','southeast')
+end
 
 end

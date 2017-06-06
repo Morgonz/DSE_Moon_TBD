@@ -8,9 +8,9 @@
 
 %function input
 h = 1629e3; % [m]
-P_req = 30; % [W]
+P_req = 62; % [W]
 P_inc = 1400; % [W/m^2] incoming power
-lifetime = 15*365.25*24*3600;
+lifetime = 15*365*24*3600;
 
 %% Eclipse calc
 %Moon parameters
@@ -103,11 +103,13 @@ else
 end
 
 degradation = 0.0525;
-L_D = (1-degradation)^5;
+L_D = (1-degradation)^lifetime;
 A_sol = A_sol / L_D/cos(deg2rad(50.2+6.68));
-notice_pwr = ['Scenario = ' scen ' A_panel= ' num2str(A_sol) ' C_bat [Wh]= ' num2str(C_bat) ' DownFrac = ' num2str(freq_MAX+freq_PEN)];
-disp(notice_pwr)
 
 M_batt = C_bat/125; % from SMAD LI_ION battery
 M_panel = A_sol*2.8;% from fake SMAD GaAs
 M = M_batt + M_panel;
+
+notice_pwr = ['Scenario = ' scen ' A_panel= ' num2str(A_sol) ' C_bat [Wh]= ' num2str(C_bat) ' DownFrac = ' num2str(freq_MAX+freq_PEN)];
+disp(notice_pwr)
+

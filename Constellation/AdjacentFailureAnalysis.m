@@ -5,10 +5,10 @@ lifetime = 5; %years
 n_cycles = 100;
 
 %Request weibulcurve
-prob = 1-WeibulProcessor(lifetime,'micro');
-
+[h,t] = WeibulProcessor(lifetime,'micro',0);
+prob = 1-h;
 T_replace = 5; % time to replace a broken satellite
-t = 1:365*lifetime;
+%t = 1:365*lifetime;
 
 nsamples = t(end);
 
@@ -143,15 +143,16 @@ disp(notice_end)
 yyaxis left
 plot(1:length(prob),prob,'LineWidth',1.5)
 % title('Hazard rate','FontSize',16)
-xlabel('Time [days]','FontSize',12)
+
 ylabel('Hazard rate','FontSize',12)
 
 yyaxis right
 flist = mean(faillist,2);
 plot(1:length(flist),flist,'LineWidth',1.5)
 ylabel('Total broken satellites','FontSize',12)
+
 labelloc = 0:365:365*lifetime;
 xlim([0 t(end)])
 xticks(labelloc)
-xticklabels({'0','1','2','3','4','5'})
-xlabel('Time [years]')
+xticklabels(0:lifetime)
+xlabel('Time [years]','FontSize',12)
