@@ -30,6 +30,7 @@ yrot = RotatingFrameSunEarth(y);
 figure
 hold on
 plot3(yrot(:,7),yrot(:,8),yrot(:,9))
+plot3(yrot(:,1),yrot(:,2),yr
 plot3(rE+rL,0,0,'c*')
 hold off
 xlabel('x [m]')

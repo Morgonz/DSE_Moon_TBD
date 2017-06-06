@@ -26,7 +26,7 @@ for theta = linspace(-180,180,3601)
     h3 = 1629000; %km frozen orbit
     r3 = h3+R_Moon;
     V3 = sqrt(Mu_Moon/r3);
-    i_change = 48.66*(pi/180);
+    i_change = 46*(pi/180);
 
 
     %options of the integrator
