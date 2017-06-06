@@ -1,7 +1,7 @@
 
 time = [];
 
-for theta = linspace(-126,-103,2301)
+for theta = linspace(-180,180,3601)
     Mu_Earth = 3.98574405E+14; %m^3 s^-2
     Mu_Moon = 4.902801e12; %m^3 s^-2
     R_Earth = 6371000; %m
@@ -70,7 +70,7 @@ for theta = linspace(-126,-103,2301)
 
         time = [time; [DV1 theta DV2 xDV2 yDV2 zDV2]];
     end
-    disp(DV1),disp(theta)
+    disp(theta)
 end
 
 

@@ -27,7 +27,7 @@ V0 = (r2-R1)*1./sqrt((r2)^3/(GMe))+72.69674; % m/s
 options = odeset('RelTol',1e-12);
 
 % The time integration of the sat
-[t,y] = ode45(@sat3BP,[0 T],[0 r2-R1 0 V0 0 0 0 r2 0 VM 0 0],options);
+[t,y] = ode45(@sat3BP,[0 10*T],[0 r2-R1 0 V0 0 0 0 r2 0 VM 0 0],options);
     
 figure
 subplot(1,2,1)
@@ -54,7 +54,7 @@ subplot(1,2,2)
 plot3(xr./1e3,yr./1e3,zr./1e3)
 hold on
 plot3(xr(1)./1e3,yr(1)./1e3,zr(1)./1e3,'*')
-%plot3(xrM(1)./1e3,yrM(1)./1e3,zrM(1)./1e3,'or')
-%plot3(0,0,0,'ob')
+plot3(xrM(1)./1e3,yrM(1)./1e3,zrM(1)./1e3,'or')
+plot3(0,0,0,'ob')
 hold off
 axis equal

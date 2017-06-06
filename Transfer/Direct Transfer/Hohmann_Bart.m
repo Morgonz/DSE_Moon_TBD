@@ -33,31 +33,21 @@ DV2 = sqrt(xDV^2 + yDV^2 + zDV^2);
 options = odeset('RelTol', 1e-12);
 options1 = odeset('RelTol', 1e-12, 'Events', @CrossMoonOrbit);
 
-[t,y] = ode45(@HohmannAcc,[0 T],[0 r1 0 -V0 0 0 rM 0 0 0 vM 0],options); %initial orbit
+[t,y] = ode45(@HohmannAcc,[0 T/5],[0 r1 0 -V0 0 0 rM 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rM 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3] = ode45(@HohmannAcc,[t2(end) t2(end)+T/5], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+[t3,y3] = ode45(@HohmannAcc,[t2(end) t2(end)+T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+
+
+
 [X,Y,Z] = sphere(10);
-
-
-
-% figure 
-% hold on
-% plot(ytotal(:,1)-ytotal(:,7)+rM,ytotal(:,2)-ytotal(:,8))
-% surf(X*R_Earth, Y*R_Earth, Z*R_Earth)
-% %surf(X*R_Moon+rM, Y*R_Moon, Z*R_Moon)
-% xlabel('x [m]')
-% ylabel('y [m]')
-% title('Transfer to the Moon-centered frozen orbit')
-% axis equal
-% hold off
-
 
 figure
 hold on
-
-plot3(y3(:,1)-y3(:,7),y3(:,2)-y3(:,8),y3(:,3)-y3(:,9),'g') %Transfer
-
-
+plot3(y(:,1),y(:,2),y(:,3),'b')
+plot3(y2(:,1),y2(:,2),y2(:,3),'b')
+plot3(y3(:,1),y3(:,2),y3(:,3),'g')
+plot3(y3(:,7),y3(:,8),y3(:,9),'r')
+plot3(y2(:,7),y2(:,8),y2(:,9),'r')
 hold off
 xlabel('x [m]')
 ylabel('y [m]')
@@ -65,6 +55,22 @@ zlabel('z [m]')
 title('Transfer to the Moon-centered frozen orbit')
 axis equal
 
+y2rot = RotatingFrame(y2);
+y3rot = RotatingFrame(y3);
+
+figure
+hold on
+plot3(y3(:,1)-y3(:,7),y3(:,2)-y3(:,8),y3(:,3)-y3(:,9))
+hold off
+xlabel('x [m]')
+ylabel('y [m]')
+zlabel('z [m]')
+axis equal
+
+
+xcheck = y3(:,1)-y3(:,7);
+ycheck = y3(:,2)-y3(:,8);
+zcheck = y3(:,3)-y3(:,9);
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
