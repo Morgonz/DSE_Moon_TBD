@@ -17,37 +17,27 @@ Mu_Sun = Mass_Sun*G;
 rE = 149.60E+9; %m ditance Earth to Sun from: https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
 vE = sqrt((Mu_Sun+Mu_Earth)/rE); %rotational speed of the Earth
 
-r_baricentre = rE*(Mass_Earth/(Mass_Sun+Mass_Earth));
+r_baricentre = rE*(Mass_Earth/(Mass_Sun+Mass_Earth))
 
 %Sun-Earth L2 seen from the Earth
 %rL_Hill = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 
 % distance Sun-Earth L2 seen from the Sun
-dL2 = 1.511E+11;   %from https://en.wikipedia.org/wiki/Lagrangian_point
-vL2_rot = (vE/rE)*dL2;
+%dL2 = 1.511E+11;   %from https://en.wikipedia.org/wiki/Lagrangian_point
+%vL2_rot = (vE/rE)*dL2;
 
 r_L2_Earth = 1.50155E+9;  %calculated with wolframalpha
-r_L2_Sun = rE+r_L2_Earth;
+r_L2_Sun = rE+r_L2_Earth
 v_rot_L2 = (vE/(rE-r_baricentre))*(r_L2_Sun-r_baricentre);
 
 
 %options of the integrator
-options = odeset('RelTol', 1e-12);
-T = 5000000; %s
+options = odeset('RelTol', 1e-15);
+T = 4*25000000; %s
 
-%[t,y] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 r_L2_Sun 0 0 0 v_rot_L2+1.95 0],options);
-%Define Event Function, target orbit at 1000 km above Moon surface
+[t,y] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 r_L2_Sun 0 0 0 v_rot_L2+5000 0],options);
 
-
-for dv = linspace(-100,100,3)
-    %options of the integrator
-    options1 = odeset('RelTol', 1e-14, 'Events', @LeaveHalo);
-    [t,y,te] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 dL2 0 0 0 vL2_rot+dv 0],options);
-    %if te>5000000
-   
-
-end
-
+%[t,y] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 dL2 0 0 0 vL2_rot_L2 0],options);
 
 
 
@@ -67,7 +57,7 @@ axis equal
 %plot3(y(:,7),y(:,8),y(:,9),'b','DisplayName','Satellite trajectory')
 
 %Sun reference rotating frame
-%plot3(yrot(:,1),yrot(:,2),yrot(:,3),'g*','DisplayName','Earth trajectory')
+plot3(yrot(:,1),yrot(:,2),yrot(:,3),'g*','DisplayName','Earth trajectory')
 plot3(yrot(:,7),yrot(:,8),yrot(:,9),'b','DisplayName','Satellite trajectory')
 
 %surf(X*R_Sun,Y*R_Sun, Z*R_Sun,'DisplayName','Sun position')
@@ -90,9 +80,3 @@ zlabel('z [m]')
 legend('show')
 
 %axis vis3d
-
-function [value,isterminal,direction] = LeaveHalo(t,y)
-value = sqrt((y(7)-r_L2_Sun)^2 + (y(2))^2) - 3;
-isterminal = 1;
-direction = 0;
-end
