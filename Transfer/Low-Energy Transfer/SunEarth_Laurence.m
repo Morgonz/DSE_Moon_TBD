@@ -42,7 +42,7 @@ T = 5000000; %s
 for dv = linspace(-100,100,3)
     %options of the integrator
     options1 = odeset('RelTol', 1e-14, 'Events', @LeaveHalo);
-    [t,y,te] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 dL2 0 0 0 vL2_rot+dv 0],options);
+    [t,y,te] = ode113(@SunEarthAcc, [0 T], [rE 0 0 0 vE 0 dL2 0 0 0 vL2_rot+dv 0],options1);
     %if te>5000000
    
 
@@ -92,7 +92,7 @@ legend('show')
 %axis vis3d
 
 function [value,isterminal,direction] = LeaveHalo(t,y)
-value = sqrt((y(7)-r_L2_Sun)^2 + (y(2))^2) - 3;
+value = sqrt((y(7)-r_L2_Sun)^2 + (y(2))^2) - 10^9;
 isterminal = 1;
 direction = 0;
 end
