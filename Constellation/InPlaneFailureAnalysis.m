@@ -2,7 +2,7 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 10000;
+n_cycles = 1000;
 
 T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
@@ -13,8 +13,8 @@ prob = 1-h;
 
 %launch settings
 n_spare_start = 4; %spares at initial condition
-launch_thresh = 2; %spares amount when new launch is ordered
-n_restock = 1; %amount of spares added to a plane at launch arrival
+launch_thresh = 1; %spares amount when new launch is ordered
+n_restock = 2; %amount of spares added to a plane at launch arrival
 
 %Construct satellite IDs
 orbits = 100:100:n*100;
@@ -182,13 +182,14 @@ yyaxis left
 sftlist = mean(sysfailtime,2);
 plot(1:length(sftlist),sftlist,'LineWidth',1); 
 ylabel('Plane system failure probability [-]','FontSize',12)
+ylim([0 0.01+max(sftlist)])
 
 xlabelloc = 0:365:365*lifetime;
 xlim([0 t(end)])
 xticks(xlabelloc)
 xticklabels(0:lifetime)
 xlabel('Time [years]','FontSize',12)
-legend('average spares in orbit','average launch arrivals','average broken satellites','Average systemfailure','Location','northeast')
+legend('Adjacent failure probability','Average spares used','Average launches arriving','Average broken satellites','Location','northeast')
 
 figure; %Case studies
 % casetitle = suptitle('Statistical analysis');
@@ -196,7 +197,7 @@ figure; %Case studies
 
 subplot(1,3,1) %Satellite failures plot
 endfail = faillist(1825,:);
-histogram(endfail,'EdgeAlpha',0.2,'FaceColor','r','Normalization','probability'); 
+histogram(endfail,'EdgeAlpha',0.4,'FaceColor','r','Normalization','probability'); 
 xlabel('# failed sats at 5 years','FontSize',12)
 ylabel('Probability of occurance [-]','FontSize',14)
 xlim([-0.5 max(endfail)+0.5])
@@ -205,7 +206,7 @@ xticklabels(0:max(endfail))
 
 subplot(1,3,2) % Launch amount plot
 endlaunch = launchlist(1825,:);
-histogram(endlaunch,'EdgeAlpha',0.2,'FaceColor','b','Normalization','probability');
+histogram(endlaunch,'EdgeAlpha',0.4,'FaceColor','b','Normalization','probability');
 xlabel('# launches at 5 years','FontSize',12)
 xlim([-0.5 max(endlaunch)+0.5])
 xticks(0:max(endlaunch))
@@ -213,7 +214,7 @@ xticklabels(0:max(endlaunch))
 
 subplot(1,3,3) % Minimum spares present plot
 minspare = min(sparelist);
-histogram(minspare,'EdgeAlpha',0.2,'FaceColor','g','Normalization','probability');
+histogram(minspare,'EdgeAlpha',0.4,'FaceColor','g','Normalization','probability');
 xlabel('Minimum spares present in plane','FontSize',12)
 xlim([-0.5 max(minspare)+0.5])
 xticks(0:max(minspare))

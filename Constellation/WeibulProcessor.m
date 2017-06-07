@@ -68,21 +68,22 @@ if plotall
     
     figure;    
     yyaxis left
-    plot(t,F,'LineWidth',1.5)
-    ylabel('Probability [-]')
+    plot(t,1-F,'LineWidth',2)
+    ylabel('Probability [-]','FontSize',14)
     
     yyaxis right
-    plot(t,1-h,'LineWidth',1.5)
+    plot(t,1-h,'LineWidth',2)
     ylim([1-h(1) 1])
-    ylabel('1 - hazard rate [-]')
+    ylabel('Failure rate [-]','FontSize',14)
 
     labelloc = 0:365:365*lifetime;
     xlim([0 t(end)])
     xticks(labelloc)
     xticklabels(0:lifetime)
-    xlabel('Time [years]')
-    title('Selected mode details')
-    legend('prob density','Reliability','Location','southeast')
+    xlabel('Time [years]','FontSize',14)
+%     title('Selected mode details')
+    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
+    set(lgnd,'FontSize',11); 
 end
 
 end
