@@ -108,6 +108,73 @@ axis equal
 axis vis3d
 grid on
 
+ytotal = [y3;y4;y5;y6;y7;y8];
+ttotal = [t3;t4;t5;t6;t7;t8];
+
+rx = ytotal(:,1)-ytotal(:,7);
+ry = ytotal(:,2)-ytotal(:,8);
+rz = ytotal(:,3)-ytotal(:,9);
+vx = ytotal(:,4)-ytotal(:,10);
+vy = ytotal(:,5)-ytotal(:,11);
+vz = ytotal(:,6)-ytotal(:,12);
+
+h1 = (ry.*vz)-(rz.*vy);
+h2 = (rz.*vx)-(rx.*vz);
+h3 = (rx.*vy)-(ry.*vx);
+i = (acos(h3./(sqrt(h1.^2 + h2.^2 + h3.^2))))*(180/pi);
+
+figure
+plot(ttotal,i)
+xlabel('time [s]')
+ylabel('inclination [deg]')
+title('Evolution of the inclination during the manoevres')
+
+rabs = sqrt(rx.^2 + ry.^2 + rz.^2);
+vabs = sqrt(vx.^2 + vy.^2 + vz.^2);
+e1 = (((vy.*h3)-(vz.*h2))/Mu_Moon)-(rx./rabs);
+e2 = (((vz.*h1)-(vx.*h3))/Mu_Moon)-(ry./rabs);
+e3 = (((vx.*h2)-(vy.*h1))/Mu_Moon)-(rz./rabs);
+e = sqrt(e1.^2 + e2.^2 + e3.^2);
+
+figure
+plot(ttotal,e)
+xlabel('time [s]')
+ylabel('eccentricity [-]')
+title('Evolution of the eccentricity during the manoeuvres')
+
+a = 1/((2*(rabs.^(-1)))-(vabs.*(1/Mu_Moon)));
+
+figure
+plot(ttotal,rabs)
+xlabel('time [s]')
+ylabel('semi-major axis')
+title('Evolution of the semi-major axis during the manoeuvres')
+
+n1 = -h2.*1;
+n2 = h1.*1;
+n3 = 0;
+raan = [];
+for i = linspace(1,length(n1),length(n1))
+    if n2(i)<0
+        RAAN1 = 2*pi - (acos(n1(i)/sqrt(n1(i)^2 + n2(i)^2)));
+    else
+        RAAN1 = acos(n1(i)/sqrt(n1(i)^2 + n2(i)^2));
+    end
+    if RAAN1>pi
+        RAAN1 = RAAN1-(2*pi);
+    end
+    raan = [raan;RAAN1];
+end
+
+raan = raan*(180/pi);
+
+
+
+figure
+plot(ttotal,raan)
+xlabel('time [s]')
+ylabel('RAAN [deg]')
+title('Evolution of the RAAN during the manoeuvres')
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
