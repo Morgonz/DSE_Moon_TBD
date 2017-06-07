@@ -7,7 +7,7 @@ i = deg2rad(10); %Elevation angle
 S_FOV = deg2rad(120/2); %Satellite field of view
 R_FOV = deg2rad(120/2); %Rover field of view
 
-%Moon parameters
+%Moon parameters5
 %M_moon = 7.342e22; % [kg]
 %G = 6.67408e-11;
 Rm = 1737.1e3; % [m]

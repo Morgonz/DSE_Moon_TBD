@@ -1,20 +1,20 @@
 %inputs
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
-lifetime = 15; %years
-n_cycles = 1000;
+lifetime = 5; %years
+n_cycles = 10000;
 
 T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
 
 %t = 1:365*lifetime;
-[h,t] = WeibulProcessor(lifetime,'micro',1);
+[h,t] = WeibulProcessor(lifetime,'micro',0);
 prob = 1-h;
 
 %launch settings
-n_spare_start = 4;
-launch_thresh = 1;
-n_restock = 2;
+n_spare_start = 4; %spares at initial condition
+launch_thresh = 2; %spares amount when new launch is ordered
+n_restock = 1; %amount of spares added to a plane at launch arrival
 
 %Construct satellite IDs
 orbits = 100:100:n*100;
@@ -22,26 +22,18 @@ sats = 1:1:p;
 ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
-%Initialize
-failures = zeros(size(ID));
-status = zeros(size(ID));
-rows = [];
-cols = [];
-failure_IDs = [];
-stats = [];
-broken = [];
-sysfail = 0;
+%Initialise
 maxbroken = [];
 histlist = [];
-sysfailtime = zeros(t(end),cycles);
+sysfailtime = zeros(t(end),n_cycles);
 brokenID = [];
 launchlist = zeros(t(end),n_cycles);
 faillist = zeros(t(end),n_cycles);
 sparelist = zeros(t(end),n_cycles);
 nsamples = t(end);
 
-satfail = 0;
 for cycles=1:n_cycles
+    %initialise
     n_l = 0;
     satfail = 0;
     sysfail = 0;
@@ -160,36 +152,69 @@ for cycles=1:n_cycles
     histlist = [histlist sysfail];
 end
 %% Plotting
-downfrac = mean(histlist);
+%downfrac = mean(histlist);
 %timefrac = sysfailtime/(365*lifetime*n_cycles);
-areafrac = timefrac*2/(n*p);
+%areafrac = timefrac*2/(n*p);
 %notice_spares = ['initial amount: ' num2str(n_spare_start) ' l_thresh: ' num2str(launch_thresh) ' n_restock: ' num2str(n_restock)];
 %disp(notice_spares)
 %notice_end = ['Total cycle sysfail%: ' num2str(downfrac*100) ' Total non-100% time%: ' num2str(timefrac*100) '. Area% not covered: ' num2str(areafrac*100)];
 %disp(notice_end)
-figure(1);
-clear figure(1)
 
-yyaxis left
+
+% x = sparelist;
+% xu = mean(x,2) + norminv(0.95) * (std(sparelist,0,2) / (size(sparelist,2))^2) ;
+% xl = mean(x,2) - norminv(0.95) * (std(sparelist,0,2) / (size(sparelist,2))^2) ;
+
+figure; %Data means with confidence intervals TBD
+yyaxis right
 slist = mean(sparelist,2);
 plot(1:length(slist),slist,'LineWidth',1); hold on;
-
 llist = mean(launchlist,2);
 plot(1:length(llist),llist,'LineWidth',1); 
 flist = mean(faillist,2);
 plot(1:length(flist),flist,'LineWidth',1.5); hold off;
-title('Spares status per orbit','FontSize',16)
+title('Spares status per orbit: Averages','FontSize',16)
 xlabel('Time [days]','FontSize',12)
 ylabel('Number','FontSize',12)
 ylim([0 1.25*max([max(slist),max(flist),max(llist)])])
 
-yyaxis right
+yyaxis left
 sftlist = mean(sysfailtime,2);
-plot(1:length(sftlist),sftlist,'LineWidth',0.01); 
-ylabel('Probability','FontSize',12)
+plot(1:length(sftlist),sftlist,'LineWidth',1); 
+ylabel('Plane system failure probability [-]','FontSize',12)
+
 xlabelloc = 0:365:365*lifetime;
 xlim([0 t(end)])
 xticks(xlabelloc)
 xticklabels(0:lifetime)
-xlabel('Time [years]')
-legend('average spares in orbit','average launches','average broken satellites','Average systemfailure','Location','northeast')
+xlabel('Time [years]','FontSize',12)
+legend('average spares in orbit','average launch arrivals','average broken satellites','Average systemfailure','Location','northeast')
+
+figure; %Case studies
+% casetitle = suptitle('Statistical analysis');
+% set(casetitle,'FontSize',18,'FontWeight','normal')
+
+subplot(1,3,1) %Satellite failures plot
+endfail = faillist(1825,:);
+histogram(endfail,'EdgeAlpha',0.2,'FaceColor','r','Normalization','probability'); 
+xlabel('# failed sats at 5 years','FontSize',12)
+ylabel('Probability of occurance [-]','FontSize',14)
+xlim([-0.5 max(endfail)+0.5])
+xticks(0:max(endfail))
+xticklabels(0:max(endfail))
+
+subplot(1,3,2) % Launch amount plot
+endlaunch = launchlist(1825,:);
+histogram(endlaunch,'EdgeAlpha',0.2,'FaceColor','b','Normalization','probability');
+xlabel('# launches at 5 years','FontSize',12)
+xlim([-0.5 max(endlaunch)+0.5])
+xticks(0:max(endlaunch))
+xticklabels(0:max(endlaunch))
+
+subplot(1,3,3) % Minimum spares present plot
+minspare = min(sparelist);
+histogram(minspare,'EdgeAlpha',0.2,'FaceColor','g','Normalization','probability');
+xlabel('Minimum spares present in plane','FontSize',12)
+xlim([-0.5 max(minspare)+0.5])
+xticks(0:max(minspare))
+xticklabels(0:max(minspare))

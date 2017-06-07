@@ -1,6 +1,6 @@
 %function input
 h = 1629e3; % [m]
-P_req = 62; % [W]
+P_req = 32; % [W]
 P_inc = 1300; % [W/m^2] incoming power
 lifetime = 5;
 degradation = 0.0525; % SMAD

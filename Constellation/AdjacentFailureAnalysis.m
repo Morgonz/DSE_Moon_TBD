@@ -2,12 +2,12 @@
 n = 6; % orbit planes
 p = 6; % sats/orbit
 lifetime = 5; %years
-n_cycles = 100;
+n_cycles = 1000;
 
 %Request weibulcurve
 [h,t] = WeibulProcessor(lifetime,'micro',0);
 prob = 1-h;
-T_replace = 5; % time to replace a broken satellite
+T_replace = 10; % time to replace a broken satellite
 %t = 1:365*lifetime;
 
 nsamples = t(end);
@@ -19,22 +19,12 @@ ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
 %Initialize
-failures = zeros(size(ID));
-status = zeros(size(ID));
-rows = [];
-cols = [];
-failure_IDs = [];
-stats = [];
-broken = [];
-sysfail = 0;
 maxbroken = [];
 histlist = [];
-sysfailtime = 0;
+sysfailtime = zeros(t(end),n_cycles);
 brokenID = [];
-
-
 faillist = zeros(t(end),n_cycles);
-satfail = 0;
+
 for cycles=1:n_cycles
     satfail = 0;
     sysfail = 0;
@@ -90,7 +80,6 @@ for cycles=1:n_cycles
             else
                 status(e(1),e(2)) = status(e(1),e(2)) + 1;
             end
-
         end
 
         %Remove repaired sats from the stat register
@@ -113,10 +102,10 @@ for cycles=1:n_cycles
 
 
             for diff=IDdiff
-                if abs(diff)==100||abs(diff)==100*(size(ID,1)-1)||abs(diff)==1||abs(diff)==size(ID,2)-1
+                if abs(diff)==100||abs(diff)==100*(size(ID,1)-1)%||abs(diff)==1||abs(diff)==size(ID,2)-1
                     notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
                     sysfail = 1;
-                    sysfailtime = sysfailtime + 1;
+                    sysfailtime(s,cycles) = 1;
                     bID = failure_IDs;
 
                 end
@@ -134,7 +123,7 @@ for cycles=1:n_cycles
     histlist = [histlist sysfail];
 end
 downfrac = mean(histlist);
-timefrac = sysfailtime/(365*lifetime*n_cycles);
+timefrac = mean(sum(sysfailtime))/(365*lifetime);
 areafrac = timefrac*2/(n*p);
 notice_end = ['Total cycle sysfail%: ' num2str(downfrac*100) ' Total non-100% time%: ' num2str(timefrac*100) '. Area% not covered: ' num2str(areafrac*100)];
 disp(notice_end)
