@@ -50,7 +50,7 @@ for t_manouvre = linspace(0.1,12.1,121)
     [t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7)+dV_kick*sin(angle) y1(end,8)-dV_kick*cos(angle) y1(end,9) y1(end,10) y1(end,11) y1(end,12)],options1);
     yrot2 = RotatingFrameSunEarth(y2);
     
-    if yrot2(end,7)>rL1
+    if yrot2(end,7)>rL1*1.2
         hold on
         plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
         plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
