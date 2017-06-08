@@ -4,14 +4,14 @@ n = 1; % single orbit analysis
 lifetime = 5; %years
 n_cycles = 1000;
 
-T_resend = 183; % days in 6 months of resend time through launch
-T_replace = 10; % time to replace a broken satellite from spares
-
 %t = 1:365*lifetime;
 [h,t] = WeibulProcessor(lifetime,'micro',0);
 prob = 1-h;
 
 %launch settings
+T_resend = 183; % days in 6 months of resend time through launch
+T_replace = 10; % time to replace a broken satellite from spares
+
 n_spare_start = 4; %spares at initial condition
 launch_thresh = 1; %spares amount when new launch is ordered
 n_restock = 2; %amount of spares added to a plane at launch arrival

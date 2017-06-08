@@ -22,18 +22,19 @@ sats = 1:1:p;
 ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
-%Initialise
-maxbroken = [];
-histlist = [];
-sysfailtime = zeros(t(end),n_cycles);
-brokenID = [];
-launchlist = zeros(t(end),n_cycles);
-faillist = zeros(t(end),n_cycles);
-sparelist = zeros(t(end),n_cycles);
-nsamples = t(end);
+
 %itvalue is the to be iterated value (efficiency?)
 for itvl=1:length(itvalue)
     value = itvalue(itvl);
+    %Initialise
+    maxbroken = [];
+    histlist = [];
+    sysfailtime = zeros(t(end),n_cycles);
+    brokenID = [];
+    launchlist = zeros(t(end),n_cycles);
+    faillist = zeros(t(end),n_cycles);
+    sparelist = zeros(t(end),n_cycles);
+    nsamples = t(end);
     
     for cycles=1:n_cycles
         %initialise

@@ -1,4 +1,4 @@
-function [  ] = walkerdeltagenerator(i,T,P,F,h,t)
+function [ loc_sat ] = walkerdeltagenerator(i,T,P,F,h,t)
 %walkerdeltagenerator: generate walker delta orbit parameters based on
 %input requirements:
 % i = inclination [deg]
@@ -21,7 +21,7 @@ omega = 0;
 i = deg2rad(i);
 const = [];
 loc_sat = [];
-ID = 0;
+ID = 1;
 
 n_sat = T/P;
 %F = P-1-T/P; % F = 0:P-1
@@ -43,6 +43,7 @@ deltaphase = 2*pi/T*F;
 hold on;
 figure(1);
 loc_sat = [];
+
 for kdx=1:T
     RAAN = deltaRAAN*(kdx-1);
     phase = deltaphase*(kdx-1);
@@ -51,7 +52,14 @@ for kdx=1:T
     
     scatter3(X(t),Y(t),Z(t),25,'filled');
     plot3(X,Y,Z,'LineWidth',1.25);
-    ID = ID + 1;
+    
+    if ID==601||ID==602||ID==603||ID==604||ID==605
+        ID = ID - 500 + 1;
+        disp('akl')
+    else
+        ID = ID + 100;
+    end
+
     loc_sat = [loc_sat;X(1) Y(1) Z(1) ID];
 
 end
@@ -78,4 +86,3 @@ view(-45,5);
 
 
 end
-
