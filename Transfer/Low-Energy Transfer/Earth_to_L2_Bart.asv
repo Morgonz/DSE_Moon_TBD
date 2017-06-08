@@ -19,25 +19,65 @@ rS = R_Earth + h; %m
 %Sun-Earth L2
 rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 
+MANIFOLDS = [];
+
 %options of the integrator
-options = odeset('RelTol', 1e-18,'Events',@Cross);
+options = odeset('RelTol', 2.22045e-14,'Events',@Close);
 T = 10000000; %s
-for DVx 
-[t,y] = ode113(@SunEarthAcc, [0 -4*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options); %stable for the longest time 
+for DVx = 97.1899
+    for DVy = 108.1301
+        for DVz = -1.260005700065
+    
+            [t,y] = ode113(@SunEarthAcc, [0 -4*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749+DVx vE+426+DVy 1.260005700065+DVz],options); %stable for the longest time 
 
-yrot = RotatingFrameSunEarth(y);
+            yrot = RotatingFrameSunEarth(y);
+            if yrot(end,8)<10000000
+%                 hold on
+%                 plot3(yrot(:,7),yrot(:,8),yrot(:,9))
+                MANIFOLDS = [MANIFOLDS; DVx DVy DVz yrot(end,8)];
+            end
+        end
+    end
+end
+% plot3(rE+rL,0,0,'c*')
+% plot3(rE,0,0,'bo')
+% xlabel('x [m]')
+% ylabel('y [m]')
+% zlabel('z [m]')
+% axis equal
+% axis vis3d
+% hold off
 
+
+r = sqrt((y(end,1)-y(end,7))^2 + (y(end,2)-y(end,8))^2 + (y(end,3)-y(end,9))^2);
+vc = sqrt(Mu_Earth/r);
+xc = y(end,7)-y(end,1);
+yc = y(end,8)-y(end,2);
+zc = y(end,9)-y(end,3);
+theta = (atan(yc/xc)-pi/2);
+vxc = -vc*cos(theta);
+vyc = -vc*sin(theta);
+vxreal = vxc + y(end,4);
+vyreal = vyc + y(end,5);
+DVx1 = y(end,10)-vxreal;
+DVy1 = y(end,11)-vyreal;
+
+DV = sqrt(DVx1^2 + DVy1^2);
+
+options1 = odeset('RelTol', 2.22045e-14);
+options2 = odeset('RelTol', 2.22045e-14, 'Events', @Halo);
+[tS,yS] = ode113(@SunEarthAcc, [0 T/1000],[y(end,1) y(end,2) y(end,3) y(end,4) y(end,5) y(end,6) y(end,1)+xc y(end,2)+yc y(end,3)+zc vxreal vyreal 0],options1);
+[ts1,ys1] = ode113(@SunEarthAcc, [0 T],[y(end,1) y(end,2) y(end,3) y(end,4) y(end,5) y(end,6) y(end,1)+xc y(end,2)+yc y(end,3)+zc vxreal+DVx1 vyreal+DVy1 0],options2);
+[ts2,ys2] = ode113(@SunEarthAcc, [ts1(end) ts1(end)+T],[ys2(end,1) ys2(end,2) ys2(end,3) ys2(end,4) ys2(end,5) ys2(end,6) ys2(end,7) ys2(end,8) ys2(end,9) ys2(end,10)-DVx ys2(end,11)-DVy ys2(end,12)-DVz],options1); 
+ySrot = RotatingFrameSunEarth(yS);
+ys1rot = RotatingFrameSunEarth(ys1);
+ys2rot = RotatingFrameSunEarth(ys2);
 figure
 hold on
-plot3(yrot(:,7),yrot(:,8),yrot(:,9))
-plot3(rE+rL,0,0,'c*')
-plot3(rE,0,0,'bo')
-hold off
-xlabel('x [m]')
-ylabel('y [m]')
-zlabel('z [m]')
+plot3(ySrot(:,7),ySrot(:,8),ySrot(:,9),'r')
+plot3(ys1rot(:,7),ys1rot(:,8),ys1rot(:,9))
+plot3(ys
 axis equal
-axis vis3d
 
 
 function [value,isterminal,direction] = Cross(t,y)
@@ -60,4 +100,16 @@ ySr1 = y(7)*sin(-tet)+y(8)*cos(-tet); %y-coordinate of the satellite in rotating
 value = xSr1-xEr1;
 isterminal=1;
 direction=0;
+end
+
+function [value,isterminal,direction] = Close(t,y)
+value = sqrt((y(7)-y(1))^2 + (y(8)-y(2))^2 + (y(9)-y(3))^2) - 7656500;
+isterminal = 1;
+direction = 1;
+end
+
+function [value,isterminal,direction] = Halo(t,y)
+value = y(8);
+isterminal = 1;
+direction = 0;
 end
