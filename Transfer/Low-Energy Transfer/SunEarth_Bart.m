@@ -23,8 +23,8 @@ rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 options = odeset('RelTol', 1e-18);
 T = 10000000; %s
 
-[t,y] = ode113(@SunEarthAcc, [0 4*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options); %stable for the longest time 
-%[t,y] = ode113(@SunEarthAcc, [0 -5*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 0],options);
+%[t,y] = ode113(@SunEarthAcc, [0 4*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options); %stable for the longest time 
+[t,y] = ode113(@SunEarthAcc, [0 -5*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 0],options);
 %[t,y] = ode113(@SunEarthAcc, [0 7*T], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.0663 vE+426 1.260005700065],options); %begin and end very close together after one revolution
 
 yrot = RotatingFrameSunEarth(y);
