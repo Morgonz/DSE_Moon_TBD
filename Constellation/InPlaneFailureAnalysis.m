@@ -2,14 +2,14 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 5000;
 
 %t = 1:365*lifetime;
 [h,t] = WeibulProcessor(lifetime,'micro',0);
 prob = 1-h;
 
 %launch settings
-T_resend = 183; % days in 6 months of resend time through launch
+T_resend = 182; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
 
 n_spare_start = 4; %spares at initial condition
@@ -199,7 +199,7 @@ subplot(1,3,1) %Satellite failures plot
 endfail = faillist(1825,:);
 histogram(endfail,'EdgeAlpha',0.4,'FaceColor','r','Normalization','probability'); 
 xlabel('# failed sats at 5 years','FontSize',12)
-ylabel('Probability of occurance [-]','FontSize',14)
+ylabel('Probability of occurrence [-]','FontSize',14)
 xlim([-0.5 max(endfail)+0.5])
 xticks(0:max(endfail))
 xticklabels(0:max(endfail))

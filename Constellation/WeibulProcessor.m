@@ -50,7 +50,6 @@ end
 
 %% Generate Weibul curve and determine hazard rate
 R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
-F = 1-R;
 f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
 h = f./R;
 
@@ -68,22 +67,22 @@ if plotall
     
     figure;    
     yyaxis left
-    plot(t,1-F,'LineWidth',2)
-    ylabel('Probability [-]','FontSize',14)
+    plot(t,R,'LineWidth',2)
+    ylabel('Probability [-]','FontSize',12)
     
     yyaxis right
     plot(t,1-h,'LineWidth',2)
     ylim([1-h(1) 1])
-    ylabel('Failure rate [-]','FontSize',14)
+    ylabel('Failure rate [-]','FontSize',12)
 
     labelloc = 0:365:365*lifetime;
     xlim([0 t(end)])
     xticks(labelloc)
     xticklabels(0:lifetime)
-    xlabel('Time [years]','FontSize',14)
+    xlabel('Time [years]','FontSize',12)
 %     title('Selected mode details')
-    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
-    set(lgnd,'FontSize',11); 
+    lgnd = legend('Inverse Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
+    set(lgnd,'FontSize',10); 
 end
 
 end

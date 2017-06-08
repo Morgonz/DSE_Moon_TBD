@@ -9,8 +9,8 @@
 %function input
 h = 1629e3; % [m]
 P_req = 32; % [W]
-P_inc = 1400; % [W/m^2] incoming power
-lifetime = 15*365*24*3600;
+P_inc = 1300; % [W/m^2] incoming power
+lifetime = 5*365*24*3600;
 
 %% Eclipse calc
 %Moon parameters

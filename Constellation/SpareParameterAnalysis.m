@@ -2,7 +2,7 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 2000;
 
 T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
@@ -22,10 +22,17 @@ sats = 1:1:p;
 ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
+iterator = 1:8;
 
-%itvalue is the to be iterated value (efficiency?)
-for itvl=1:length(itvalue)
-    value = itvalue(itvl);
+dat1 = zeros(length(iterator),1);
+dat2 = zeros(length(iterator),1);
+dat3 = zeros(length(iterator),1);
+
+lable = 'n_restock'; %EDIT THIS
+
+for itvl=iterator
+    n_restock = itvl; %EDIT THIS
+    disp(itvl);
     %Initialise
     maxbroken = [];
     histlist = [];
@@ -155,72 +162,34 @@ for itvl=1:length(itvalue)
         maxbroken = [maxbroken max(broken)];
         histlist = [histlist sysfail];
     end
+    
+%     slist = mean(sparelist,2);
+%     llist = mean(launchlist,2);
+%     flist = mean(faillist,2);
+
+% 
+%     endfail = faillist(1825,:);
+     endlaunch = launchlist(1825,:);
+     minspare = min(sparelist);
+     sftlist = mean(sysfailtime,2);
+
+     dat1(itvl-iterator(1)+1) = sum(minspare==0)/n_cycles;
+     dat2(itvl-iterator(1)+1) = mean(endlaunch);
+     dat3(itvl-iterator(1)+1) = sum(sftlist)/t(end);
 end
-%% Plotting
-%downfrac = mean(histlist);
-%timefrac = sysfailtime/(365*lifetime*n_cycles);
-%areafrac = timefrac*2/(n*p);
-%notice_spares = ['initial amount: ' num2str(n_spare_start) ' l_thresh: ' num2str(launch_thresh) ' n_restock: ' num2str(n_restock)];
-%disp(notice_spares)
-%notice_end = ['Total cycle sysfail%: ' num2str(downfrac*100) ' Total non-100% time%: ' num2str(timefrac*100) '. Area% not covered: ' num2str(areafrac*100)];
-%disp(notice_end)
 
-
-% x = sparelist;
-% xu = mean(x,2) + norminv(0.95) * (std(sparelist,0,2) / (size(sparelist,2))^2) ;
-% xl = mean(x,2) - norminv(0.95) * (std(sparelist,0,2) / (size(sparelist,2))^2) ;
-
-figure; %Data means with confidence intervals TBD
-yyaxis right
-slist = mean(sparelist,2);
-plot(1:length(slist),slist,'LineWidth',1); hold on;
-llist = mean(launchlist,2);
-plot(1:length(llist),llist,'LineWidth',1); 
-flist = mean(faillist,2);
-plot(1:length(flist),flist,'LineWidth',1.5); hold off;
-title('Spares status per orbit: Averages','FontSize',16)
-xlabel('Time [days]','FontSize',12)
-ylabel('Number','FontSize',12)
-ylim([0 1.25*max([max(slist),max(flist),max(llist)])])
-
+figure;
+xlabel(lable)
 yyaxis left
-sftlist = mean(sysfailtime,2);
-plot(1:length(sftlist),sftlist,'LineWidth',1); 
-ylabel('Plane system failure probability [-]','FontSize',12)
-ylim([0 0.01+max(sftlist)])
+plot(iterator,dat1);
+ylabel('mean days of 0 spares present')
 
-xlabelloc = 0:365:365*lifetime;
-xlim([0 t(end)])
-xticks(xlabelloc)
-xticklabels(0:lifetime)
-xlabel('Time [years]','FontSize',12)
-legend('Adjacent failure probability','Average spares used','Average launches arriving','Average broken satellites','Location','northeast')
 
-figure; %Case studies
-% casetitle = suptitle('Statistical analysis');
-% set(casetitle,'FontSize',18,'FontWeight','normal')
+yyaxis right
+plot(iterator,dat2);
+ylabel('mean launches after 5 years')
+figure;
+plot(iterator,dat3);
+xlabel(lable)
+ylabel('lifetime system failure fraction')
 
-subplot(1,3,1) %Satellite failures plot
-endfail = faillist(1825,:);
-histogram(endfail,'EdgeAlpha',0.4,'FaceColor','r','Normalization','probability'); 
-xlabel('# failed sats at 5 years','FontSize',12)
-ylabel('Probability of occurance [-]','FontSize',14)
-xlim([-0.5 max(endfail)+0.5])
-xticks(0:max(endfail))
-xticklabels(0:max(endfail))
-
-subplot(1,3,2) % Launch amount plot
-endlaunch = launchlist(1825,:);
-histogram(endlaunch,'EdgeAlpha',0.4,'FaceColor','b','Normalization','probability');
-xlabel('# launches at 5 years','FontSize',12)
-xlim([-0.5 max(endlaunch)+0.5])
-xticks(0:max(endlaunch))
-xticklabels(0:max(endlaunch))
-
-subplot(1,3,3) % Minimum spares present plot
-minspare = min(sparelist);
-histogram(minspare,'EdgeAlpha',0.4,'FaceColor','g','Normalization','probability');
-xlabel('Minimum spares present in plane','FontSize',12)
-xlim([-0.5 max(minspare)+0.5])
-xticks(0:max(minspare))
-xticklabels(0:max(minspare))
