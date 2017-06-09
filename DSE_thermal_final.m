@@ -1,21 +1,17 @@
-close all
-clear all 
-clc
-
 
 
 
 %% Thermal controll program
  
  %Input parameters
- 
+ panel_incl = 0; % inclination (0 -> 50.2+6.68)
  T_i=288; %K initial temperature
- h=1700; %Orbit height moon (km)
- Period=10806; %Orbital period (s)
- Eclipse_T=2730; %Eclipse time (s)
+ h=1629; %Orbit height moon (km)
+ Period= round(1.753722994309795e+04); %Orbital period (s)
+ Eclipse_T= round(3.027876566028392e+03); %Eclipse time (s)
  
  %% Selection of over how many orbits
- n=2; %Ammount of orbits
+ n=3; %Ammount of orbits
  
  
  %% L1-L2 lagrange points
@@ -254,7 +250,7 @@ end
      -((sigma*((Yp(7)+Ym(7))/2)*Yp(1)*(Tmax_Yp(s)^4-Tmax_Ym(s)^4))/(Yp(1)*Yp(2)*Yp(9)*Yp(5))));
  
      Tmax_Sp(s+1)=Tmax_Sp(s)...
-     +(((Inc_max(s)*Sp(1)*Sp(6)*cosd(0))/((Sp(1)*Sp(2)*Sp(9)+0.45)*Sp(5)))...
+     +(((Inc_max(s)*Sp(1)*Sp(6)*cosd(panel_incl))/((Sp(1)*Sp(2)*Sp(9)+0.45)*Sp(5)))...
      -(((sigma*Sp(7)*Sp(1)*Tmax_Sp(s)^4)+(sigma*Sp(7)*Sp(1)*Tmax_Sp(s)^4))/((Sp(1)*Sp(2)*Sp(9)+0.45)*Sp(5)))...
      -((Tmax_Sp(s)-Tmax_Zp(s))*Zp_Sp)...
      -((0*sigma*((Yp(7)+Ym(7))/2)*Yp(1)*(Tmax_Yp(s)^4-Tmax_Ym(s)^4))/(Yp(1)*Yp(2)*Yp(9)*Yp(5))));
@@ -302,10 +298,10 @@ time=1:Period*n;
  grid on
  legend('Sp panel','Sm panel')
  
+ Temps_out = Tmax_Sp(Period+1:Period*2);
  
  
- 
- 
+ plot(1:Period,Temps_out(1:end))
  
  
  

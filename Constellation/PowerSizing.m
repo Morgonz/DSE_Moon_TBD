@@ -3,7 +3,7 @@ h = 1629e3; % [m]
 P_req = 32; % [W]
 P_inc = 1300; % [W/m^2] incoming power
 lifetime = 5; % Years
-degradation = 0.0525; % 0.0525 from SMAD, 0.03 from badescu2012moon
+degradation = 0.03; % 0.0525 from SMAD, 0.03 from badescu2012moon
 absorp = 0.9; % Solar absorptance
 
 %Moon parameters

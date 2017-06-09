@@ -2,7 +2,7 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 2000;
+n_cycles = 1000;
 
 T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
@@ -28,10 +28,10 @@ dat1 = zeros(length(iterator),1);
 dat2 = zeros(length(iterator),1);
 dat3 = zeros(length(iterator),1);
 
-lable = 'n_restock'; %EDIT THIS
+lable = 'n_spare_start'; %EDIT THIS
 
 for itvl=iterator
-    n_restock = itvl; %EDIT THIS
+    n_spare_start = itvl; %EDIT THIS
     disp(itvl);
     %Initialise
     maxbroken = [];
