@@ -121,13 +121,35 @@ vz = ytotal(:,6)-ytotal(:,12);
 h1 = (ry.*vz)-(rz.*vy);
 h2 = (rz.*vx)-(rx.*vz);
 h3 = (rx.*vy)-(ry.*vx);
-i = (acos(h3./(sqrt(h1.^2 + h2.^2 + h3.^2))))*(180/pi);
+INC = (acos(h3./(sqrt(h1.^2 + h2.^2 + h3.^2))))*(180/pi);   %Kepler INC
+
+sizet=size(ttotal);
+sizet=sizet(1);
+
+SMA=zeros(sizet,1);         %Kepler SMA
+for i=(1:sizet)
+    af1=1/(rx(i)^2+ry(i)^2+rz(i)^2)^.5*2;
+    af2=(vx(i)^2+vy(i)^2+vz(i)^2)/Mu_Moon;
+    SMA(i)=1/(af1-af2);
+end
 
 figure
-plot(ttotal,i)
+plot(ttotal,SMA);hold on;
+SMA_target=zeros(sizet,1)+(1.737+1.629)*10^6;
+plot(ttotal,SMA_target,'--','color','black');hold off;
+xlabel('time [s]')
+ylabel('Semi-major axis [m]')
+title('Semi-major axis during insertion')
+grid('on'); grid('minor')
+
+figure
+plot(ttotal,INC);hold on;
+INC_target=zeros(sizet,1)+50.2;
+plot(ttotal,INC_target,'--','color','black');hold off;
 xlabel('time [s]')
 ylabel('inclination [deg]')
-title('Evolution of the inclination during the manoevres')
+title('Evolution of the inclination during insertion')
+grid('on'); grid('minor')
 
 rabs = sqrt(rx.^2 + ry.^2 + rz.^2);
 vabs = sqrt(vx.^2 + vy.^2 + vz.^2);
@@ -140,7 +162,8 @@ figure
 plot(ttotal,e)
 xlabel('time [s]')
 ylabel('eccentricity [-]')
-title('Evolution of the eccentricity during the manoeuvres')
+title('Evolution of the eccentricity during insertion')
+grid('on'); grid('minor')
 
 a = 1/((2*(rabs.^(-1)))-(vabs.*(1/Mu_Moon)));
 
@@ -148,7 +171,8 @@ figure
 plot(ttotal,rabs)
 xlabel('time [s]')
 ylabel('semi-major axis')
-title('Evolution of the semi-major axis during the manoeuvres')
+title('Evolution of the semi-major axis during insertion')
+grid('on'); grid('minor')
 
 n1 = -h2.*1;
 n2 = h1.*1;
@@ -171,10 +195,21 @@ raan = raan*(180/pi);
 
 
 figure
-plot(ttotal,raan)
+plot(ttotal,raan); hold on;
+RAAN_t1=zeros(sizet,1)-72.9199;
+RAAN_t2=zeros(sizet,1)-42.9199;
+RAAN_t3=zeros(sizet,1)+17.0801;
+RAAN_t4=zeros(sizet,1)+77.0801;
+RAAN_t5=zeros(sizet,1)+137.0801;
+plot(ttotal,RAAN_t1,'--','color','black');
+plot(ttotal,RAAN_t2,'--','color','black');
+plot(ttotal,RAAN_t3,'--','color','black');
+plot(ttotal,RAAN_t4,'--','color','black');
+plot(ttotal,RAAN_t5,'--','color','black'); hold off;
 xlabel('time [s]')
 ylabel('RAAN [deg]')
 title('Evolution of the RAAN during the manoeuvres')
+grid('on'); grid('minor')
 
 %Define Event Function, target orbit at 1000 km above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
