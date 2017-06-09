@@ -67,7 +67,8 @@ if plotall
     
     figure;    
     yyaxis left
-    plot(t,R,'LineWidth',2)
+    plot(t,R,'LineWidth',2); hold on;
+    plot(t,f,'LineWidth',2);hold off;
     ylabel('Probability [-]','FontSize',12)
     
     yyaxis right
@@ -81,8 +82,12 @@ if plotall
     xticklabels(0:lifetime)
     xlabel('Time [years]','FontSize',12)
 %     title('Selected mode details')
-    lgnd = legend('Inverse Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
+    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
     set(lgnd,'FontSize',10); 
 end
-
+% Verification data
+% points_h = [1 2 5 20 100 500 1800];
+% result_h = [0.9802963267 0.9879313474 0.9936870026 0.9976315796 0.9992411653 0.9997568916 0.9999017306];
+% points_R = [1 25 200 500 1500];
+% result_R = [0.934920326 0.8413897857 0.727980529 0.6602226179 0.5639942852];
 end

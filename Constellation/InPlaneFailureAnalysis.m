@@ -2,7 +2,7 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 5000;
+n_cycles = 1000;
 
 %t = 1:365*lifetime;
 [h,t] = WeibulProcessor(lifetime,'micro',0);
@@ -219,3 +219,5 @@ xlabel('Minimum spares present in plane','FontSize',12)
 xlim([-0.5 max(minspare)+0.5])
 xticks(0:max(minspare))
 xticklabels(0:max(minspare))
+
+notice_out = ['Spares: ' num2str(slist(end)) '. Launches: ' num2str(llist(end)) '. Failures: ' num2str(flist(end)) '. Tot fail prob: ' num2str() '.']
