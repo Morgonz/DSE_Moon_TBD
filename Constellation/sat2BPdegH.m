@@ -10,15 +10,16 @@ zp = state(3);
 % yv = state(5);
 % zv = state(6);
 
-% Moon rotation
+% Moon inertial to moon fixed
 %add rotation to satellites
 ome = 2*pi/(29.5*3600*24); %rad/s - https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-
+%% Time conversion from seconds to juliandate
 t_rot = t;
-R3 = [ cos(ome*t_rot) -sin(ome*t_rot) 0;
-       sin(ome*t_rot)  cos(ome*t_rot) 0;
-             0               0        1];
-      
+OME  = -ome*t_rot;
+Tz_E = rotationmatrices.Tz(OME);
+Ty_E = rotationmatrices.Ty(deg2rad(6.69)); % from https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
+
+%%      
 % Earth influence
 GMe = 3.9860044e14;
 xe = 385000600;
@@ -26,24 +27,19 @@ ye = 0;
 ze = 0;
 
 % Moon SH
-SatM_coords  = R3*[xp yp zp]';
-Earth_coords = R3*[xe ye ze]';
+SatM_coords  = Tz_E*[xp yp zp]'; 
+Earth_coords = Ty_E*Tz_E*[xe ye ze]';
 model        = 'LP165P';
 degree       = 50;
 
 de  = sqrt((Earth_coords(1)-xp)^2+(Earth_coords(2)-yp)^2+(Earth_coords(3)-zp)^2);
 dE  = sqrt((Earth_coords(1))^2+(Earth_coords(2))^2+(Earth_coords(3))^2);
 ade = -GMe./(de*de*de); %add moon gravity loc
-adE = -GMe./(dE*dE*dE);
+adE = -GMe./(dE*dE*dE); 
 
 [gx, gy, gz] = gravitysphericalharmonic(SatM_coords',model,degree);
+G_arr = Tz_E'*[gx, gy, gz]';
 
-t_rot = -t;
-R3_rev = [ cos(ome*t_rot) -sin(ome*t_rot) 0;
-           sin(ome*t_rot)  cos(ome*t_rot) 0;
-                 0               0        1];
-       
-G_arr = R3_rev*[gx, gy, gz]';
 % minus due to vector from Moon (maybe it doens't work since this actually
 % implies there is also a VM (more momentum less the influence of forces)
 gEx = -ade*(Earth_coords(1)-xp)-(-adE*Earth_coords(1));
