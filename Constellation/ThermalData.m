@@ -1,14 +1,17 @@
-function [ Temps_out ] = ThermalData( inclination )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+function [ Temps_out ] = ThermalData( inclination,orbitaltitude )
+%ThermalData Outputs thermal data for solar panels
+%   Part of thermal control tool
 %% Thermal controll program
  
  %Input parameters
  panel_incl = inclination; % inclination (0 -> 50.2+6.68)
  T_i=288; %K initial temperature
- h=1629; %Orbit height moon (km)
- Period= round(1.753722994309795e+04); %Orbital period (s)
- Eclipse_T= round(3.027876566028392e+03); %Eclipse time (s)
+ h=orbitaltitude; %Orbit height moon (km)
+ [Period, Eclipse_T] = Eclipse(orbitaltitude,5);
+ Period = round(Period);
+ Eclipse_T = round(Eclipse_T);
+%  Period= round(1.753722994309795e+04); %Orbital period (s)
+%  Eclipse_T= round(3.027876566028392e+03); %Eclipse time (s)
  
  %% Selection of over how many orbits
  n=3; %Ammount of orbits

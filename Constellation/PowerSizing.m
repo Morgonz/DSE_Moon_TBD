@@ -1,19 +1,19 @@
 %function input
 h = 1629e3; % [m]
-P_req = 32; % [W]
+P_req = 50; % [W]
 P_inc = 1300; % [W/m^2] incoming power
 lifetime = 5; % Years
 degradation = 0.03; % 0.0525 from SMAD, 0.03 from badescu2012moon
 absorp = 0.9; % Solar absorptance
 
-[T,Teclipse]=Eclipse(h,lifetime);
-
+[T,Teclipse] = Eclipse(h,lifetime);
+%T_eclipse = 0;
 
 %% Power calculations
 %efficiency parameters
 DOD_bat = 0.60; % Depth of discharge (Lithium Ion, 9e3 cycles)
 %1000 to 25 degrees, 98% energy efficiency
-e_sol = 0.26; %solar panel efficiency at BOL(triple junction GaAs/GaAs (improved MJ))
+e_sol = 0.30; %solar panel efficiency at BOL(triple junction GaAs/GaAs (improved MJ))
 % Cell = 4x6 cm, -80 to 100 degrees, 0.21%/K (badescu2012moon)
 L_D = (1-degradation)^lifetime; % degradation factor
 L_P = cos(deg2rad(50.2+6.68)); % pointing factor: inclination + Moon tilt worst case
