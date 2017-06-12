@@ -2,7 +2,7 @@
 n = 6; % orbit planes
 p = 6; % sats/orbit
 lifetime = 5; %years
-n_cycles = 100000;
+n_cycles = 10;
 
 %Request weibulcurve
 [h,t] = WeibulProcessor(lifetime,'micro',0);
@@ -124,12 +124,12 @@ for cycles=1:n_cycles
 end
 
 %% plot
+flist = mean(faillist,2);
 downfrac = mean(histlist);
 timefrac = mean(sum(sysfailtime))/(365*lifetime);
 areafrac = timefrac*2/(n*p);
 notice_end = ['Adjacent failure%: ' num2str(downfrac*100) ', downtime%: ' num2str(timefrac*100) ', Total broken: ' num2str(flist(end))];
 disp(notice_end)
-
 
 yyaxis left
 plot(t,mean(sysfailtime,2),'LineWidth',1.5)

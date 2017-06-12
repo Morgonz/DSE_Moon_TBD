@@ -1,10 +1,10 @@
-function [ Temps_out ] = ThermalData(  )
+function [ Temps_out ] = ThermalData( inclination )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 %% Thermal controll program
  
  %Input parameters
- panel_incl = 0; % inclination (0 -> 50.2+6.68)
+ panel_incl = inclination; % inclination (0 -> 50.2+6.68)
  T_i=288; %K initial temperature
  h=1629; %Orbit height moon (km)
  Period= round(1.753722994309795e+04); %Orbital period (s)
