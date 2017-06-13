@@ -23,7 +23,7 @@ for DV1 = linspace(3059.93304058853-7,3059.93304058853+12,20)
         eM = 0.0554; %Eccentricity
         rMa = aM*(1+eM);%Apocentre
         rMp = aM*(1-eM); %Pericentre
-        vM = sqrt(((2*(Mu_Earth+Mu_Moon))/rMa)-((Mu_Earth+Mu_Moon)/aM)); %m/s speed of rotation of the Moon at the pericentre
+        vM = sqrt(((2*(Mu_Earth+Mu_Moon))/rM)-((Mu_Earth+Mu_Moon)/aM)); %m/s speed of rotation of the Moon at the pericentre
         
         %transfer orbit
         %aT  = (r1+rM)/2; 
@@ -42,7 +42,7 @@ for DV1 = linspace(3059.93304058853-7,3059.93304058853+12,20)
         options1 = odeset('RelTol', 1e-12, 'Events', @CrossMoonOrbit);
 
 
-        [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rMa 0 0 0 vM 0],options1); %Transfer Orbit
+        [t2,y2,te] = ode45(@HohmannAcc,[0 T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rMp 0 0 0 vM 0],options1); %Transfer Orbit
         if te>1000
             xp2 = y2(end,1); %position in x-direction as transfer orbit crosses target orbit
             yp2 = y2(end,2); %position in y-direction as transfer orbit crosses target orbit
