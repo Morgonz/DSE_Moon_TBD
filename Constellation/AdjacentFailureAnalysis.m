@@ -2,7 +2,7 @@
 n = 6; % orbit planes
 p = 6; % sats/orbit
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 10;
 
 %Request weibulcurve
 [h,t] = WeibulProcessor(lifetime,'micro',0);
@@ -73,7 +73,7 @@ for cycles=1:n_cycles
 
             if status(e(1),e(2))>=T_replace %sat is replaced
 
-                notice_repair = ['Sat ' num2str(e(3)) ' is replaced.'];
+                %notice_repair = ['Sat ' num2str(e(3)) ' is replaced.'];
                 %disp(notice_repair)
                 replaced = [replaced l];
                 status(e(1),e(2)) = 0;
@@ -103,7 +103,7 @@ for cycles=1:n_cycles
 
             for diff=IDdiff
                 if abs(diff)==100||abs(diff)==100*(size(ID,1)-1)%||abs(diff)==1||abs(diff)==size(ID,2)-1
-                    notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
+                    %notice_sysfail = ['Adjacent sat failure. ' num2str(failure_IDs') ' have failed simultaneously.'];
                     sysfail = 1;
                     sysfailtime(s,cycles) = 1;
                     bID = failure_IDs;
@@ -114,7 +114,7 @@ for cycles=1:n_cycles
 
     end
     if sysfail == 1
-        disp(notice_sysfail)
+        %disp(notice_sysfail)
         brokenID = [brokenID bID'];
 
     end
@@ -122,26 +122,29 @@ for cycles=1:n_cycles
     
     histlist = [histlist sysfail];
 end
+
+%% plot
+flist = mean(faillist,2);
 downfrac = mean(histlist);
 timefrac = mean(sum(sysfailtime))/(365*lifetime);
 areafrac = timefrac*2/(n*p);
-notice_end = ['Total cycle sysfail%: ' num2str(downfrac*100) ' Total non-100% time%: ' num2str(timefrac*100) '. Area% not covered: ' num2str(areafrac*100)];
+notice_end = ['Adjacent failure%: ' num2str(downfrac*100) ', downtime%: ' num2str(timefrac*100) ', Total broken: ' num2str(flist(end))];
 disp(notice_end)
 
-
 yyaxis left
-plot(1:length(prob),prob,'LineWidth',1.5)
-% title('Hazard rate','FontSize',16)
-
-ylabel('Hazard rate','FontSize',12)
+plot(t,mean(sysfailtime,2),'LineWidth',1.5)
+ylabel('Adjacent plane failure probabilty','FontSize',12)
 
 yyaxis right
 flist = mean(faillist,2);
 plot(1:length(flist),flist,'LineWidth',1.5)
 ylabel('Total broken satellites','FontSize',12)
-
 labelloc = 0:365:365*lifetime;
 xlim([0 t(end)])
 xticks(labelloc)
 xticklabels(0:lifetime)
 xlabel('Time [years]','FontSize',12)
+
+dim = [.2 .3 0 0];
+str = 'Straight Line Plot from 1 to 10';
+annotation('textbox',dim,'String',notice_end,'FitBoxToText','on');

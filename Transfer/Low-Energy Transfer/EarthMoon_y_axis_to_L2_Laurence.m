@@ -26,7 +26,7 @@ rL2 = rM+rHill
 r_halo2_orbit = 42000000
 rot_speed_Moon = vM/rM
 v_L1 = rot_speed_Moon*rL1
-v_L2 = rot_speed_Moon*rL2
+v_L2 = rot_speed_Moon*(rL2+r_halo2_orbit)
 
 %options of the integrator
 options1 = odeset('RelTol', 1e-18);
@@ -34,7 +34,7 @@ options2 = odeset('RelTol', 1e-18, 'Events', @toocloseEarth);
 
 %define delta v of kick adn total time
 dV_kick = -100 %in delta V
-T_days = 40;
+T_days = 20;
 T = 60*60*24*T_days; %s
 
 %integrator
@@ -60,24 +60,34 @@ for t_manouvre = linspace(0.1,12.1,121)
 end
 %}
 hold on
-[t1,y1] = ode113(@EarthMoonAcc,[0 T],[rM 0 0 0 vM 0  rL2+r_halo2_orbit 0 0 0 v_L2-220 0 ],options1); %initial orbit
-%yrot1 = RotatingFrameSunEarth(y1);
+[t1,y1] = ode113(@EarthMoonAcc,[0 T],[rM 0 0 0 vM 0  rL2+r_halo2_orbit 0 0 0 v_L2-400 0 ],options1); %initial orbit
+yrot1 = RotatingFrameSunEarth(y1);
 %plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
-plot3(y1(:,1),y1(:,2),y1(:,3)); %plot moon trajectory
-plot3(y1(:,7),y1(:,8),y1(:,9)); %plot satellite trajectory
+
+%%%intertial plotting
+plot3(y1(:,1),y1(:,2),y1(:,3),'DisplayName','Moon trajectory'); %plot moon trajectory
+plot3(y1(:,7),y1(:,8),y1(:,9),'DisplayName','Sat trajectory'); %plot satellite trajectory
 
 [X,Y,Z] = sphere(20);
 L2 = plot3(rL2,0,0,'k*','DisplayName','Earth-Moon L2');
 %plot3(y(:,1),y(:,2),y(:,3));  %plotting the Moon
 Earth = surf(X*R_Earth,Y*R_Earth,Z*R_Earth);
 %surf(X*R_Moon+rM,Y*R_Moon,Z*R_Moon,'DisplayName','Moon');
+
+
 hold off
-legend([L2 Earth],{'Earth-Moon L2','Earth'})
+%legend([L2 Earth],{'Earth-Moon L2','Earth'})
+legend('show')
 axis equal
-%axis vis3d
+axis vis3d
 xlabel('x [m]')
 ylabel('y [m]')
 zlabel('z [m]')
+
+
+%set(gca,'Ydir','reverse')
+%set(gca,'Xdir','reverse')
+
 title('Rotating frame with Earth-Moon L2 point')
 
 
