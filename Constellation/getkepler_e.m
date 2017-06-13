@@ -1,15 +1,15 @@
-classdef getkepler
+classdef getkepler_e
     properties
-        mu=4.902801e12;
+        mu=4.0350323550225975e14;
         rx;ry;rz;
         vx;vy;vz;
         
         hx;hy;hz;
-        SMA;ECC;RAAN;INC;AOP;S;
+        SMA;ECC;RAAN;INC;AOP;S;nor;
     end
     methods
         
-        function obj=getkepler(rx,ry,rz,vx,vy,vz)
+        function obj=getkepler_e(rx,ry,rz,vx,vy,vz)
             siz=size(rx);siz=siz(1);
             obj.S=siz;
             obj.rx=rx; obj.ry=ry; obj.rz=rz;
@@ -66,6 +66,13 @@ classdef getkepler
                 if ez(i)<0
                     obj.AOP(i)=2*pi-obj.AOP(i);
                 end
+            end
+            
+            %NORMAL VECTOR
+            obj.nor=zeros(obj.S,3);
+            for i=(1:obj.S)
+                obj.nor(i,:)=cross([obj.rx(i);obj.ry(i);obj.rz(i)],[obj.vx(i);obj.vy(i);obj.vz(i)]);
+                obj.nor(i,:)=obj.nor(i,:)/(obj.nor(i,1)^2+obj.nor(i,2)^2+obj.nor(i,3)^2)^.5;
             end
             
         end
