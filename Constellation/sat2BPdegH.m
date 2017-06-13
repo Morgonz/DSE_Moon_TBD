@@ -16,16 +16,36 @@ MIR = 1;
 t_rot = t;
 %% Earth Third Body Perturbations
 if ETB==1
-    ome_E = 2*pi/(27.32*3600*24); %rad/s - https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
-    OME_E  = -ome_E*t_rot;
-    
-    Tz_E = rotationmatrices.Tz(OME_E);
-    Ty_E = rotationmatrices.Ty(deg2rad(6.69)); % from https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
+%     ome_E = 2*pi/(27.32*3600*24); %rad/s - https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
+%     OME_E  = -ome_E*t_rot;
+%     
+%     Tz_E = rotationmatrices.Tz(OME_E);
+%     Ty_E = rotationmatrices.Ty(deg2rad(6.69)); % from https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
+% 
+%     GMe = 3.9860044e14;
+%     xe = 365000600; ye = 0; ze = 0; %
+%     
+%     E_coords     = Ty_E*Tz_E*[xe ye ze]';
 
-    GMe = 3.9860044e14;
-    xe = 365000600; ye = 0; ze = 0; %
+%%%%%% NEW %%%%%%%%%%%
+    RAANe=1.4180;
+    INCe=0.1177;
+    theta_in=1.5835;
+    an0=0.5988;
+    e_m=0.0450;
+    sma_m=3.8140e+08;
     
-    E_coords     = Ty_E*Tz_E*[xe ye ze]';
+    an=tanomaly(an0,t,sma,e_m,.001);
+    theta=an+theta_in;
+    
+    T3=rotationmatrices.Tz(RAANe);
+    T2=rotationmatrices.Tx(INCe);
+    T1=rotationmatrices.Tz(theta);
+    
+    E_coords=T3*T2*T1*[0;0;1]*sma_m*(1-e_m^2)/(1+e*cos(theta));
+%%%%%%%%%%%%%%%%%%%%%%
+    
+    
     
     de  = sqrt((E_coords(1)-xp)^2+(E_coords(2)-yp)^2+(E_coords(3)-zp)^2);
     dE  = sqrt((E_coords(1))^2+(E_coords(2))^2+(E_coords(3))^2);
