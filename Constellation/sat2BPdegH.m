@@ -9,9 +9,9 @@ zp = state(3);
 % xv = state(4);
 % yv = state(5);
 % zv = state(6);
-ETB = 0;
+ETB = 1;
 STB = 0;
-MIR = 1;
+MIR = 0;
 
 t_rot = t;
 %% Earth Third Body Perturbations
@@ -22,7 +22,7 @@ if ETB==1
 %     Tz_E = rotationmatrices.Tz(OME_E);
 %     Ty_E = rotationmatrices.Ty(deg2rad(6.69)); % from https://ssd.jpl.nasa.gov/dat/lunar_cmd_2005_jpl_d32296.pdf
 % 
-%     GMe = 3.9860044e14;
+    GMe = 3.9860044e14;
 %     xe = 365000600; ye = 0; ze = 0; %
 %     
 %     E_coords     = Ty_E*Tz_E*[xe ye ze]';
@@ -35,14 +35,14 @@ if ETB==1
     e_m=0.0450;
     sma_m=3.8140e+08;
     
-    an=tanomaly(an0,t,sma,e_m,.001);
-    theta=an+theta_in;
+    an=tanomaly(an0,t,sma_m,e_m,.001);
+    theta=an-an0+theta_in;
     
     T3=rotationmatrices.Tz(RAANe);
     T2=rotationmatrices.Tx(INCe);
     T1=rotationmatrices.Tz(theta);
     
-    E_coords=T3*T2*T1*[0;0;1]*sma_m*(1-e_m^2)/(1+e*cos(theta));
+    E_coords=T3*T2*T1*[1;0;0]*sma_m*(1-e_m^2)/(1+e_m*cos(theta));
 %%%%%%%%%%%%%%%%%%%%%%
     
     
