@@ -22,12 +22,12 @@ rHill = rM*(Mu_Moon/(3*Mu_Earth))^(1/3);
 %Satellite intital conditions
 rL1 = rM-rHill;
 rL2 = rM+rHill;
-r_halo_orbit = 38000000;
+r_halo_orbit = 44000000;
 rot_speed_Moon = vM/rM;
-v_L1 = rot_speed_Moon*(rM-rL1);
+v_L1 = rot_speed_Moon*(rL1);
 
 % Time
-T_days = 12.1;  %T_days 12.1 for one orbit
+T_days = 60;  %T_days 12.1 for one orbit
 T = 60*60*24*T_days; %s
 
 % SUN
@@ -36,7 +36,7 @@ T = 60*60*24*T_days; %s
 %options of the integrator
 options1 = odeset('RelTol', 1e-18);
 
-[t1,y1] = ode113(@EarthMoonAcc,[0 T],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+896.5178218 0 ],options1); %initial orbit
+[t1,y1] = ode113(@EarthMoonAcc,[0 T],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+234.91105658342964091 0 ],options1); %initial orbit
 yrot1 = RotatingFrameSunEarth(y1);
 
 max_distance_X_direction = max(yrot1(:,7))-min(yrot1(:,7));

@@ -20,56 +20,60 @@ rot_speed_Moon = vM/rM
 v_L1 = rot_speed_Moon*(rM-rL1)
 
 %options of the integrator
-options1 = odeset('RelTol', 1e-18);
-options2 = odeset('RelTol', 1e-18, 'Events', @TwoEvents);
-options3 = odeset('RelTol', 1e-18, 'Events', @toofar_in_y);
+options1 = odeset('RelTol', 2.22045e-14);
+options2 = odeset('RelTol', 2.22045e-14, 'Events', @TwoEvents);
+options3 = odeset('RelTol', 2.22045e-14, 'Events', @toofar_in_y);
 
 %define delta v of kick adn total time
-dV_kick = 10 %in delta V
+%dV_kick = 20 %in delta V
 T_days = 60;
 T = 60*60*24*T_days; %s
 
 %integrator   (for t_manouvre = linspace(3.7,3.9,21)) 
 %% The big loop
-for t_manouvre = linspace(0.1,12.1,121)
-    t = 60*60*24*t_manouvre; %s
-    
-    [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+896.5178218 0 ],options1); %initial orbit
-    yrot1 = RotatingFrameSunEarth(y1);
-    % calculating velocities
-    V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2)
-    V_abs_xy = sqrt(y1(end,10)^2+y1(end,11)^2)
-    dv_x = (y1(end,10)/V_abs)*dV_kick
-    dv_y = (y1(end,11)/V_abs)*dV_kick
-    dv_z = (y1(end,12)/V_abs)*dV_kick
-    
-    [t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
-    yrot2 = RotatingFrameSunEarth(y2);
-    
-    if yrot2(end,7)>rM*1.1
-        display(['At t_manouvre of: ', + num2str(t_manouvre)])
-        hold on
-        figure(1)   %intertial frame
-        %plot3(y1(:,7),y1(:,8),y1(:,9),'DisplayName','sat part 1');
-        plot3(y2(:,7),y2(:,8),y2(:,9),'DisplayName','sattelite trajectory');
-        hold on
-        
-        %%% plotting Poincaré 
-        figure(2);   %dx/dt-y plot
-        plot(y2(end,8),y2(end,10),'k*');
-        hold on
-        figure(3);   %dy/dt-y plot
-        plot(y2(end,8),y2(end,11),'ko');
-        hold on
-        
-        %figure(2)   %rotating frame
-        %plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
-        %plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9),'DisplayName','sattelite trajectory');
-        
-        hold on
-        
-    end
+for dV_kick = linspace(10,100,10)
+    for t_manouvre = linspace(0.1,12.1,121)
+        t = 60*60*24*t_manouvre; %s
 
+        [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+896.5178218 0 ],options1); %initial orbit
+        yrot1 = RotatingFrameSunEarth(y1);
+        % calculating velocities
+        V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2);
+        V_abs_xy = sqrt(y1(end,10)^2+y1(end,11)^2);
+        dv_x = (y1(end,10)/V_abs)*dV_kick;
+        dv_y = (y1(end,11)/V_abs)*dV_kick;
+        dv_z = (y1(end,12)/V_abs)*dV_kick;
+
+        [t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
+        %only a kick in x direction
+        %[t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+50 y1(end,11) y1(end,12)],options2);
+        yrot2 = RotatingFrameSunEarth(y2);
+
+        if yrot2(end,7)>rM*1.1
+            display(['At t_manouvre of: ', + num2str(t_manouvre)])
+            hold on
+            figure(1)   %intertial frame
+            %plot3(y1(:,7),y1(:,8),y1(:,9),'DisplayName','sat part 1');
+            plot3(y2(:,7),y2(:,8),y2(:,9),'DisplayName','sattelite trajectory');
+            hold on
+
+            %%% plotting Poincaré 
+            figure(2);   %dx/dt-y plot
+            plot(y2(end,8),y2(end,10),'k*');
+            hold on
+            figure(3);   %dy/dt-y plot
+            plot(y2(end,8),y2(end,11),'ko');
+            hold on
+
+            %plotting rotating frame
+            figure(4)   %rotating frame
+            %plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
+            plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9),'DisplayName','sattelite trajectory');
+            hold on
+
+        end
+
+    end
 end
 hold on
 
@@ -86,7 +90,7 @@ ylabel('y [m]')
 zlabel('z [m]')
 title(['Earth fixed intertial frame with manifold trajectories iniated by kick of ' num2str(dV_kick) ' deltaV'])
 
-
+hold on
 %% Poin caré plotting
 figure(2);
 
@@ -104,9 +108,9 @@ xlabel('y [m]')
 ylabel('dy/dt [m/s]')
 title(['Poincaré plots of dy/dt-y '])
 
-
+hold on
 %% Plotting of rotating frame
-%{
+%
 figure(4)
 [X,Y,Z] = sphere(20);
 L1 = plot3(rL1,0,0,'k*','DisplayName','Earth-Moon L1');
