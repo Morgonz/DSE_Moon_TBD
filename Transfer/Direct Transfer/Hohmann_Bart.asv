@@ -61,7 +61,7 @@ options6 = odeset('RelTol', 1e-18, 'Events', @RAAN);
 
 [t,y] = ode113(@HohmannAcc,[0 T/5],[0 r1 0 -V0 0 0 rMa 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode113(@HohmannAcc,[0 100*T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rMa 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3,te2] = ode113(@HohmannAcc,[t2(end) t2(end)+T/50], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
+[t3,y3,te2] = ode113(@HohmannAcc,[t2(end) t2(end)+T/5], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
 [t4,y4] = ode113(@HohmannAcc, [t3(end) t3(end)+T], [y3(end,1) y3(end,2) y3(end,3) y3(end,4)+xDV1 y3(end,5)+yDV1 y3(end,6)+zDV1 y3(end,7) y3(end,8) y3(end,9) y3(end,10) y3(end,11) y3(end,12)],options3);
 [t5,y5] = ode113(@HohmannAcc, [t4(end) t4(end)+T], y4(end,:),options3);
 [t6,y6] = ode113(@HohmannAcc, [t5(end) t5(end)+T], [y4(end,1) y4(end,2) y4(end,3) y4(end,4)+xDV2 y4(end,5)+yDV2 y4(end,6)+zDV2 y4(end,7) y4(end,8) y4(end,9) y4(end,10) y4(end,11) y4(end,12)],options4);
@@ -73,17 +73,19 @@ yrot = RotatingFrame(y);
 y2rot = RotatingFrame(y2);
 y3rot = RotatingFrame(y3);
 
+plot(t3,sqrt((y3(:,1)-y3(:,7)).^2
+
 % figure
 % hold on
 % b1 = plot3(yrot(:,1),yrot(:,2),yrot(:,3),'r');
 % plot3(y2rot(:,1),y2rot(:,2),y2rot(:,3),'r')
 % plot3(y3rot(:,1),y3rot(:,2),y3rot(:,3),'r')
-% b2 = plot3(y3rot(:,7),y3rot(:,8),y3rot(:,9),'color',0.5*[1 1 1]);
-% plot3(y2rot(:,7),y2rot(:,8),y2rot(:,9),'color',0.5*[1 1 1])
-% b6 = plot3(y3rot(end,7),y3rot(end,8),y3rot(end,9),'.','color',0.5*[1 1 1],'MarkerSize',10);
-% b5 = plot3(y2rot(1,7),y2rot(1,8),y2rot(1,9),'o','color',0.5*[1 1 1]);
-% b3 = plot3(y2rot(1,1),y2rot(1,2),y2rot(1,3),'k>');
-% plot3(y2rot(end,1),y2rot(end,2),y2rot(end,3),'k<')
+% b2 = plot3(y3(:,7),y3(:,8),y3rot(:,9),'color',0.5*[1 1 1]);
+% plot3(y2(:,7),y2(:,8),y2(:,9),'color',0.5*[1 1 1])
+% b6 = plot3(y3(end,7),y3(end,8),y3(end,9),'.','color',0.5*[1 1 1],'MarkerSize',10);
+% b5 = plot3(y2(1,7),y2(1,8),y2(1,9),'o','color',0.5*[1 1 1]);
+% b3 = plot3(y2(1,1),y2(1,2),y2(1,3),'k>');
+% plot3(y2(end,1),y2(end,2),y2(end,3),'k<')
 % b4 = plot3(0,0,0,'b.','MarkerSize',20);
 % legend([b1,b2,b5,b6,b3,b4],{'Satellite trajectory','Moon trajectory','Moons starting position','Moons end position','Burns','Earth'})
 % hold off
@@ -92,7 +94,6 @@ y3rot = RotatingFrame(y3);
 % zlabel('z [m]')
 % title('Transfer to the Moon-centered frozen orbit')
 % axis equal
-
 
 % figure
 % hold on

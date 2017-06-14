@@ -40,30 +40,8 @@ deltaRAAN = 2*pi/P;
 deltaphase = 2*pi/T*F;
 
 
-hold on;
+
 figure(1);
-loc_sat = [];
-
-for kdx=1:T
-    RAAN = deltaRAAN*(kdx-1);
-    phase = deltaphase*(kdx-1);
-
-    [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
-    
-    scatter3(X(t),Y(t),Z(t),25,'filled');
-    plot3(X,Y,Z,'LineWidth',1.25);
-    
-    if ID==601||ID==602||ID==603||ID==604||ID==605
-        ID = ID - 500 + 1;
-        disp('akl')
-    else
-        ID = ID + 100;
-    end
-
-    loc_sat = [loc_sat;X(1) Y(1) Z(1) ID];
-
-end
-
 %plot moon sphere
 set(gca,'FontSize',20)
 set(gca,'XtickLabel',[],'YtickLabel',[]);
@@ -75,7 +53,29 @@ xlabel('X [m]','FontSize',12);
 ylabel('Y [m]','FontSize',12);
 zlabel('Z [m]','FontSize',12);
 
-surf(p,q,r);hold on;
+% surf(p,q,r);hold on;
+loc_sat = [];
+
+for kdx=1:T
+    RAAN = deltaRAAN*(kdx-1);
+    phase = deltaphase*(kdx-1);
+
+    [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
+    
+%     scatter3(X(t),Y(t),Z(t),25,'filled');
+%     plot3(X,Y,Z,'LineWidth',1.25);
+    
+    if ID==601||ID==602||ID==603||ID==604||ID==605
+        ID = ID - 500 + 1;
+    else
+        ID = ID + 100;
+    end
+
+    loc_sat = [loc_sat;X(1) Y(1) Z(1) ID];
+
+end
+
+
 
 box on
 grid on
