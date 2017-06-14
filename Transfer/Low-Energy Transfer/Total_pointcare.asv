@@ -1,0 +1,13 @@
+clear all;
+close all;
+clc;
+
+Mu_Earth = 3.98574405E+14; %m^3 s^-2
+Mu_Sun = 1.327124E+20; %m^3 s^-2 from wikipedia
+R_Earth = 6371000; %m
+R_Sun = 695508000; %m https://solarsystem.nasa.gov/planets/sun/facts
+
+Mu_Earth = 3.98574405E+14; %m^3 s^-2
+Mu_Moon = 4.902801e12; %m^3 s^-2
+R_Earth = 6371000; %m mean radius of the Earth
+R_Moon = 1737400; %m mean Moon radius
