@@ -16,7 +16,7 @@ for i=(1:n)
     e_m=0.0450;
     sma_m=3.8140e+08;
 
-    an=tanomaly(an0,t,sma_m,e_m,.001);
+    an=tanomaly(an0,t,sma_m,e_m,.0001);
     theta=an-an0+theta_in;
     
 
