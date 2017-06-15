@@ -41,10 +41,10 @@ for i = linspace(1,length(xE),length(xE))
     yEr1 = xE(i)*sin(-tet)+yE(i)*cos(-tet);
     xSr1 = xS(i)*cos(-tet)-yS(i)*sin(-tet);
     ySr1 = xS(i)*sin(-tet)+yS(i)*cos(-tet);
-    vxEr1 = vxE(i)+(omega*yE(i));
-    vyEr1 = vyE(i)-(omega*xE(i));
-    vxSr1 = vxS(i)+(omega*yS(i));
-    vySr1 = vyS(i)-(omega*xS(i));
+    vxEr1 = vxE(i)+(omega*yEr1);
+    vyEr1 = vyE(i)-(omega*xEr1);
+    vxSr1 = vxS(i)+(omega*ySr1);
+    vySr1 = vyS(i)-(omega*xSr1);
     
     
     xEr = [xEr; xEr1];

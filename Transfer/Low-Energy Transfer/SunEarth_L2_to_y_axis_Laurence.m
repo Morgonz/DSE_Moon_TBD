@@ -45,7 +45,10 @@ for t_manouvre = linspace(1,180,180)
         plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
     %end
 end
-
+figure
+plot(t,yrot2(:,4))
+figure
+plot(t,yrot2(:,5))
 % title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
 % 
 % L2 = plot3(rE+rL,0,0,'k*','DisplayName','Earth-Sun L2')
