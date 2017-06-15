@@ -5,7 +5,7 @@ classdef getkepler_e
         vx;vy;vz;
         
         hx;hy;hz;
-        SMA;ECC;RAAN;INC;AOP;S;nor;
+        SMA;ECC;RAAN;INC;AOP;S;R;nor;ta;evecx;evecy;evecz;
     end
     methods
         
@@ -14,6 +14,7 @@ classdef getkepler_e
             obj.S=siz;
             obj.rx=rx; obj.ry=ry; obj.rz=rz;
             obj.vx=vx; obj.vy=vy; obj.vz=vz;
+            
             
             %ANGULAR MOMENTUM
             obj.hx=(obj.ry.*obj.vz)-(obj.rz.*obj.vy);
@@ -30,11 +31,15 @@ classdef getkepler_e
             
             %ECCENTRICITY
             obj.ECC=zeros(obj.S,1);
-            r=sqrt(obj.rx.^2+obj.ry.^2+obj.rz.^2);
-            ex=(((obj.vy.*obj.hz)-(obj.vz.*obj.hy))/obj.mu)-(obj.rx./r);
-            ey=(((obj.vz.*obj.hx)-(obj.vx.*obj.hz))/obj.mu)-(obj.ry./r);
-            ez=(((obj.vx.*obj.hy)-(obj.vy.*obj.hx))/obj.mu)-(obj.rz./r);
+            obj.R=sqrt(obj.rx.^2+obj.ry.^2+obj.rz.^2);
+            ex=(((obj.vy.*obj.hz)-(obj.vz.*obj.hy))/obj.mu)-(obj.rx./obj.R);
+            ey=(((obj.vz.*obj.hx)-(obj.vx.*obj.hz))/obj.mu)-(obj.ry./obj.R);
+            ez=(((obj.vx.*obj.hy)-(obj.vy.*obj.hx))/obj.mu)-(obj.rz./obj.R);
             obj.ECC=sqrt(ex.^2+ey.^2+ez.^2);
+            
+            obj.evecx=ex;
+            obj.evecy=ey;
+            obj.evecz=ez;
             
             %INCLINATION
             obj.INC=(acos(obj.hz./(sqrt(obj.hx.^2+obj.hy.^2+obj.hz.^2))));
@@ -73,6 +78,15 @@ classdef getkepler_e
             for i=(1:obj.S)
                 obj.nor(i,:)=cross([obj.rx(i);obj.ry(i);obj.rz(i)],[obj.vx(i);obj.vy(i);obj.vz(i)]);
                 obj.nor(i,:)=obj.nor(i,:)/(obj.nor(i,1)^2+obj.nor(i,2)^2+obj.nor(i,3)^2)^.5;
+            end
+            
+            %TRUE ANOMALY
+            obj.ta=zeros(obj.S,1);
+            for i=(1:obj.S)
+                obj.ta(i)=acos((ex(i)*rx(i)+ey(i)*ry(i)+ez(i)*rz(i))/(obj.ECC(i)*obj.R(i)));
+                if vz<0
+                    obj.ta(i)=2*pi-obj.ta(i);
+                end
             end
             
         end

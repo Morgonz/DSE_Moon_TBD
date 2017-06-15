@@ -24,7 +24,7 @@ for i=(1:n)
     phi=angles(1);
     theta=angles(2);
     psi=angles(3);
-    T_sel=rotationmatrices.Tz(phi)*rotationmatrices.Tx(theta)*rotationmatrices.Tz(psi);
+    T_sel=rotationmatrices.Tz(psi)*rotationmatrices.Tx(theta)*rotationmatrices.Tz(phi);
 
     % Rotation matrix: Selenocentric => Inertial
     ome = 2*pi/(29.5*3600*24); %rad/s - https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
@@ -32,9 +32,9 @@ for i=(1:n)
     T_I = rotationmatrices.Tz(OME);
 
     
-    [pos,vel]=planetEphemeris(ep_time,'Moon','Earth','405','km');
+    [pos,vel]=planetEphemeris(2459001.500000000,'Earth','Moon','432t','km');
     
-    pos=T_I*T_sel*pos'; vel=T_I*T_sel*vel';
+    %pos=T_I*T_sel*pos'; vel=T_I*T_sel*vel';
     
     rx(i)=pos(1)*10^3; ry(i)=pos(2)*10^3; rz(i)=pos(3)*10^3;
     vx(i)=vel(1)*10^3; vy(i)=vel(2)*10^3; vz(i)=vel(3)*10^3;
