@@ -15,9 +15,9 @@ vM = sqrt((Mu_Earth+Mu_Moon)/rM); %m/s speed of rotation of the Moon
 rHill = rM*(Mu_Moon/(3*Mu_Earth))^(1/3);
 rL1 = rM-rHill
 rL2 = rM+rHill
-r_halo_orbit = 38000000
+r_halo_orbit = 44000000
 rot_speed_Moon = vM/rM
-v_L1 = rot_speed_Moon*(rM-rL1)
+v_L1 = rot_speed_Moon*(rL1)
 
 %options of the integrator
 options1 = odeset('RelTol', 2.22045e-14);
@@ -31,11 +31,12 @@ T = 60*60*24*T_days; %s
 
 %integrator   (for t_manouvre = linspace(3.7,3.9,21)) 
 %% The big loop
-for dV_kick = linspace(10,100,10)
+%for dV_kick = linspace(10,100,10)
+dV_kick = 10
     for t_manouvre = linspace(0.1,12.1,121)
         t = 60*60*24*t_manouvre; %s
 
-        [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+896.5178218 0 ],options1); %initial orbit
+        [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+234.91105658342964091 0 ],options1);
         yrot1 = RotatingFrameSunEarth(y1);
         % calculating velocities
         V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2);
@@ -74,7 +75,7 @@ for dV_kick = linspace(10,100,10)
         end
 
     end
-end
+%end
 hold on
 
 %% Plotting of inertial frame

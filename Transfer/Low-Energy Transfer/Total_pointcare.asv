@@ -113,28 +113,30 @@ dV_kick_p3 = 10;
         [t2_p3,y2_p3] = ode113(@EarthMoonAcc, [-t_p3 -T_p3], [y1_p3(end,1) y1_p3(end,2) y1_p3(end,3) y1_p3(end,4) y1_p3(end,5) y1_p3(end,6) y1_p3(end,7) y1_p3(end,8) y1_p3(end,9) y1_p3(end,10)+dv_x_p3 y1_p3(end,11)+dv_y_p3 y1_p3(end,12)+dv_z_p3],options2_p3);
         yrot2_p3 = RotatingFrameSunEarth(y2_p3);
         
-        distance_sat_Earth = sqrt(y2_p3(end,7)^2+y2_p3(end,8)^2)
+        distance_sat_Earth = sqrt(y2_p3(end,7)^2+y2_p3(end,8)^2);
         
         if yrot2_p3(end,7)>rM*1.0 & distance_sat_Earth > rL2
             %display(['At t_manouvre of: ', + num2str(t_manouvre_p3)])
             hold on
             
             % Convert from inertial to polar velocities
-            [theta_rad, rho] = cart2pol(y2_p3(end,7),y2_p3(end,8))
+            [theta_rad, rho] = cart2pol(y2(end,7),y2(end,8))
             T = [  cos(theta_rad) -sin(theta_rad);
                    sin(theta_rad) cos(theta_rad)  ]
-            V_cartesian = [y2_p3(end,10) ; y2_p3(end,11)]
+            V_cartesian = [y2(end,10) ; y2(end,11)]
             V_polar = inv(T)*V_cartesian
             
                      
+            
             %%% plotting Poincaré 
             figure(1);   %dx/dt-y plot
+            distance_Earth = sqrt(y2_p3(end,7)^2+y2_p3(end,8)^2)
             %plot(y2_p3(end,8),y2_p3(end,10),'ro','DisplayName','part 3');
-            plot(rho,V_polar(2),'ro','DisplayName','part 3');
+            plot(distance_Earth,y2_p3(end,10),'r*','DisplayName','part 3');
             hold on
             figure(2);   %dy/dt-y plot
             %plot(y2_p3(end,8),y2_p3(end,11),'ro','DisplayName','part3');
-            plot(rho,V_polar(1),'ro','DisplayName','part3');
+            plot(distance_Earth,y2_p3(end,11),'ro','DisplayName','part3');
             hold on
             %DATA3 = [DATA3; dV_kick_p3 t_manouvre_p3 y2_p3(end,8) y2_p3(end,10) y2_p3(end,11)];
 
