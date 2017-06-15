@@ -3,9 +3,9 @@ close all;
 clc;
 
 time = [];
-for DV1 = linspace(3059.93304058853-7,3059.93304058853+12,20)
+for DV1 = 3059.93304058853%linspace(3059.93304058853-7,3059.93304058853+12,20)
     time1 = [];
-    for theta = linspace(-180,180,3601)
+    for theta = -122.6%linspace(-180,180,3601)
 
         Mu_Earth = 3.98574405E+14; %m^3 s^-2
         Mu_Moon = 4.902801e12; %m^3 s^-2
@@ -35,7 +35,7 @@ for DV1 = linspace(3059.93304058853-7,3059.93304058853+12,20)
         h3 = 1629000; %km frozen orbit
         r3 = h3+R_Moon;
         V3 = sqrt(Mu_Moon/r3);
-        i_change = 46*(pi/180);
+        i_change = (46)*(pi/180);
 
 
         %options of the integrator

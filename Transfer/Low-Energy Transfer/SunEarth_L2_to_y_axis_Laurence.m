@@ -32,32 +32,32 @@ for t_manouvre = linspace(1,180,180)
 
     [t1,y1] = ode113(@SunEarthAcc, [0 t], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
     yrot1 = RotatingFrameSunEarth(y1);
-    angle = atan2(yrot1(end,8),(yrot1(end,7)-(rE+rL)));
+    angle = atan2(yrot1(end,11)-yrot1(end,5),(yrot1(end,10)-yrot1(end,4)));
     dv_x = dV_kick*sin(angle);
     dv_y = dV_kick*-cos(angle);
 
-    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7)+dV_kick*sin(angle) y1(end,8)-dV_kick*cos(angle) y1(end,9) y1(end,10) y1(end,11) y1(end,12)],options2);
+    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dV_kick*sin(angle) y1(end,11)-dV_kick*cos(angle) y1(end,12)],options2);
     yrot2 = RotatingFrameSunEarth(y2);
     
-    if yrot2(end,7)<1.514E+11
+    %if yrot2(end,7)<1.514E+11
         hold on
         plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
         plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
-    end
+    %end
 end
 
-title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
-
-L2 = plot3(rE+rL,0,0,'k*','DisplayName','Earth-Sun L2')
-Earth = plot3(rE,0,0,'bo','DisplayName','Earth')
-%surf(X*R_Sun,Y*R_Sun, Z*R_Sun,'DisplayName','Sun position')
-hold off
-xlabel('x [m]')
-ylabel('y [m]')
-zlabel('z [m]')
-legend([L2 Earth],{'Earth-Sun L2','Earth'})
-axis equal
-axis vis3d
+% title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
+% 
+% L2 = plot3(rE+rL,0,0,'k*','DisplayName','Earth-Sun L2')
+% Earth = plot3(rE,0,0,'bo','DisplayName','Earth')
+% %surf(X*R_Sun,Y*R_Sun, Z*R_Sun,'DisplayName','Sun position')
+% hold off
+% xlabel('x [m]')
+% ylabel('y [m]')
+% zlabel('z [m]')
+% %legend([L2 Earth],{'Earth-Sun L2','Earth'})
+% axis equal
+% axis vis3d
 %}
 
 

@@ -34,20 +34,20 @@ DV2 = sqrt(xDV^2 + yDV^2 + zDV^2);
 
 %first RAAN change
 DV3 = 472.8822;
-xDV1 = 0.6174*DV3;
-yDV1 = 0.3946*DV3;
+xDV1 = 0.6355*DV3;
+yDV1 = 0.3646*DV3;
 zDV1 = -0.6806*DV3;
 
 %second RAAN change
 DV4 = 927.436;
-xDV2 = 0.1611*DV4;
-yDV2 = 0.7024*DV4;
+xDV2 = 0.1945*DV4;
+yDV2 = 0.6939*DV4;
 zDV2 = -0.6933*DV4;
 
 %third RAAN change
 DV5 = 927.436;
-xDV3 = -0.5277*DV5;
-yDV3 = 0.4907*DV5;
+xDV3 = -0.5037*DV5;
+yDV3 = 0.5154*DV5;
 zDV3 = -0.6933*DV5;
 
 
@@ -57,21 +57,20 @@ options1 = odeset('RelTol', 1e-18, 'Events', @CrossMoonOrbit);
 options2 = odeset('RelTol', 1e-18, 'Events', @FirstRAAN);
 options3 = odeset('RelTol', 1e-18, 'Events', @SecondRAAN);
 options4 = odeset('RelTol', 1e-18, 'Events', @ThirdRAAN);
-options6 = odeset('RelTol', 1e-18, 'Events', @RAAN);
+
 
 [t,y] = ode113(@HohmannAcc,[0 T/5],[0 r1 0 -V0 0 0 rMa 0 0 0 vM 0],options); %initial orbit
 [t2,y2,te] = ode113(@HohmannAcc,[0 100*T],[r1*cos(theta*(pi/180)) r1*sin(theta*(pi/180)) 0 -V1*sin(theta*(pi/180)) V1*cos(theta*(pi/180)) 0 rMa 0 0 0 vM 0],options1); %Transfer Orbit
-[t3,y3,te2] = ode113(@HohmannAcc,[t2(end) t2(end)+T/50], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options); %orbit after DV2
-[t4,y4] = ode113(@HohmannAcc, [t3(end) t3(end)+T], [y3(end,1) y3(end,2) y3(end,3) y3(end,4)+xDV1 y3(end,5)+yDV1 y3(end,6)+zDV1 y3(end,7) y3(end,8) y3(end,9) y3(end,10) y3(end,11) y3(end,12)],options3);
-[t5,y5] = ode113(@HohmannAcc, [t4(end) t4(end)+T], y4(end,:),options3);
-[t6,y6] = ode113(@HohmannAcc, [t5(end) t5(end)+T], [y4(end,1) y4(end,2) y4(end,3) y4(end,4)+xDV2 y4(end,5)+yDV2 y4(end,6)+zDV2 y4(end,7) y4(end,8) y4(end,9) y4(end,10) y4(end,11) y4(end,12)],options4);
-%[t8,y8] = ode113(@HohmannAcc, [t7(end) t7(end)+T/5],[y7(end,1) y7(end,2) y7(end,3) y7(end,4)+xDV4 y7(end,5)+yDV4 y7(end,6)+zDV4 y7(end,7) y7(end,8) y7(end,9) y7(end,10) y7(end,11) y7(end,12)],options);
+[t3,y3,te2] = ode113(@HohmannAcc,[t2(end) t2(end)+T], [y2(end,1) y2(end,2) y2(end,3) y2(end,4)+xDV y2(end,5)+yDV y2(end,6)+zDV y2(end,7) y2(end,8) y2(end,9) y2(end,10) y2(end,11) y2(end,12)],options2); %orbit after DV2
+[t4,y4,te3] = ode113(@HohmannAcc,[t3(end) t3(end)+T], [y3(end,1) y3(end,2) y3(end,3) y3(end,4)+xDV1 y3(end,5)+yDV1 y3(end,6)+zDV1 y3(end,7) y3(end,8) y3(end,9) y3(end,10) y3(end,11) y3(end,12)],options3);
+[t5,y5,te4] = ode113(@HohmannAcc,[t4(end) t4(end)+T], [y4(end,1) y4(end,2) y4(end,3) y4(end,4)+xDV2 y4(end,5)+yDV2 y4(end,6)+zDV2 y4(end,7) y4(end,8) y4(end,9) y4(end,10) y4(end,11) y4(end,12)],options4);
+[t6,y6,te5] = ode113(@HohmannAcc,[t5(end) t5(end)+T/5], [y5(end,1) y5(end,2) y5(end,3) y5(end,4)+xDV3 y5(end,5)+yDV3 y5(end,6)+zDV3 y5(end,7) y5(end,8) y5(end,9) y5(end,10) y5(end,11) y5(end,12)],options);
 
 [X,Y,Z] = sphere(40);
 
-yrot = RotatingFrame(y);
-y2rot = RotatingFrame(y2);
-y3rot = RotatingFrame(y3);
+% yrot = RotatingFrame(y);
+% y2rot = RotatingFrame(y2);
+% y3rot = RotatingFrame(y3);
 
 % figure
 % hold on
@@ -93,95 +92,80 @@ y3rot = RotatingFrame(y3);
 % title('Transfer to the Moon-centered frozen orbit')
 % axis equal
 
-
-% figure
-% hold on
-% plot3(y3(:,1)-y3(:,7),y3(:,2)-y3(:,8),y3(:,3)-y3(:,9))
-% plot3(y4(:,1)-y4(:,7),y4(:,2)-y4(:,8),y4(:,3)-y4(:,9))
-% plot3(y5(:,1)-y5(:,7),y5(:,2)-y5(:,8),y5(:,3)-y5(:,9))
-% plot3(y6(:,1)-y6(:,7),y6(:,2)-y6(:,8),y6(:,3)-y6(:,9))
-% plot3(y7(:,1)-y7(:,7),y7(:,2)-y7(:,8),y7(:,3)-y7(:,9))
-% plot3(y8(:,1)-y8(:,7),y8(:,2)-y8(:,8),y8(:,3)-y8(:,9))
-% plot3(-2239538.05808371,-672206.984197519,-2421273.02400838,'c*')
-% plot3(-521800,-2274600,-2425700,'*c')
-% plot3(1709000,-1589200,-2425700,'*c')
-% plot3(-2230700,-685400,2425700,'*c')
-% surf(X*R_Moon,Y*R_Moon,Z*R_Moon)
-% hold off
-% xlabel('x [m]')
-% ylabel('y [m]')
-% zlabel('z [m]')
-% axis equal
-% axis vis3d
-% grid on
+% y0 = [y3;y4;y5;y6];
+% t0 = ([t3;t4;t5;t6]-t2(end))/(24*60*60);
+% kepler = getkepler(y0(:,1)-y0(:,7),y0(:,2)-y0(:,8),y0(:,3)-y0(:,9),y0(:,4)-y0(:,10),y0(:,5)-y0(:,11),y0(:,6)-y0(:,12));
 % 
-% ytotal = [y3;y4;y5;y6;y7;y8];
-% ttotal = [t3;t4;t5;t6;t7;t8];
 % 
-% rx = ytotal(:,1)-ytotal(:,7);
-% ry = ytotal(:,2)-ytotal(:,8);
-% rz = ytotal(:,3)-ytotal(:,9);
-% vx = ytotal(:,4)-ytotal(:,10);
-% vy = ytotal(:,5)-ytotal(:,11);
-% vz = ytotal(:,6)-ytotal(:,12);
-% 
-% h1 = (ry.*vz)-(rz.*vy);
-% h2 = (rz.*vx)-(rx.*vz);
-% h3 = (rx.*vy)-(ry.*vx);
-% i = (acos(h3./(sqrt(h1.^2 + h2.^2 + h3.^2))))*(180/pi);
-% 
-% figure
-% plot(ttotal,i)
-% xlabel('time [s]')
-% ylabel('inclination [deg]')
-% title('Evolution of the inclination during the manoevres')
-% 
-% rabs = sqrt(rx.^2 + ry.^2 + rz.^2);
-% vabs = sqrt(vx.^2 + vy.^2 + vz.^2);
-% e1 = (((vy.*h3)-(vz.*h2))/Mu_Moon)-(rx./rabs);
-% e2 = (((vz.*h1)-(vx.*h3))/Mu_Moon)-(ry./rabs);
-% e3 = (((vx.*h2)-(vy.*h1))/Mu_Moon)-(rz./rabs);
-% e = sqrt(e1.^2 + e2.^2 + e3.^2);
-% 
-% figure
-% plot(ttotal,e)
-% xlabel('time [s]')
-% ylabel('eccentricity [-]')
-% title('Evolution of the eccentricity during the manoeuvres')
-% 
-% a = 1/((2*(rabs.^(-1)))-(vabs.*(1/Mu_Moon)));
-% 
-% figure
-% plot(ttotal,rabs)
-% xlabel('time [s]')
-% ylabel('semi-major axis')
-% title('Evolution of the semi-major axis during the manoeuvres')
-% 
-% n1 = -h2.*1;
-% n2 = h1.*1;
-% n3 = 0;
-% raan = [];
-% for i = linspace(1,length(n1),length(n1))
-%     if n2(i)<0
-%         RAAN1 = 2*pi - (acos(n1(i)/sqrt(n1(i)^2 + n2(i)^2)));
-%     else
-%         RAAN1 = acos(n1(i)/sqrt(n1(i)^2 + n2(i)^2));
+% for i = linspace(1,length(kepler.RAAN),length(kepler.RAAN))
+%     if kepler.RAAN(i)>180*(pi/180)
+%         kepler.RAAN(i) = kepler.RAAN(i)-360*(pi/180);
 %     end
-%     if RAAN1>pi
-%         RAAN1 = RAAN1-(2*pi);
-%     end
-%     raan = [raan;RAAN1];
 % end
 % 
-% raan = raan*(180/pi);
+% 
+figure
+hold on
+%b1=plot3(y3(:,1)-y3(:,7),y3(:,2)-y3(:,8),y3(:,3)-y3(:,9));
+b2=plot3(y4(:,1)-y4(:,7),y4(:,2)-y4(:,8),y4(:,3)-y4(:,9));
+b3=plot3(y5(:,1)-y5(:,7),y5(:,2)-y5(:,8),y5(:,3)-y5(:,9));
+%b4=plot3(y6(:,1)-y6(:,7),y6(:,2)-y6(:,8),y6(:,3)-y6(:,9));
+b5=plot3(y5(1,1)-y5(1,7),y5(1,2)-y5(1,8),y5(1,3)-y5(1,9),'k>');
+b6=surf(X*R_Moon,Y*R_Moon,Z*R_Moon);
+legend([b2,b3,b5,b6],{'Orbit after first plane change','Orbit after second plane change','Burn','Moon'});
+hold off
+xlabel('x [m]')
+ylabel('y [m]')
+zlabel('z [m]')
+title('First plane change')
+axis equal
+axis vis3d
+grid on
 % 
 % 
 % 
 % figure
-% plot(ttotal,raan)
-% xlabel('time [s]')
-% ylabel('RAAN [deg]')
-% title('Evolution of the RAAN during the manoeuvres')
+% 
+% title('Change of the Kepler elements')
+% subplot(2,2,1)
+% plot(t0,kepler.INC*(180/pi))
+% title('Change of inclination over time')
+% xlabel('Time [days]')
+% ylabel('Inclination [\circ]')
+% hline = refline([0 46]);
+% set(hline,'LineStyle',':')
+% hline1 = refline([0 50.2]);
+% set(hline1,'LineStyle',':')
+% 
+% 
+% subplot(2,2,2)
+% plot(t0,kepler.RAAN*(180/pi))
+% title('Change of RAAN over time')
+% xlabel('Time [days]')
+% ylabel('RAAN [\circ]')
+% hline2 = refline([0 284.3418-360]);
+% set(hline2,'LineStyle',':')
+% hline3 = refline([0 314.3418-360]);
+% set(hline3,'LineStyle',':')
+% hline4 = refline([0 14.3418]);
+% set(hline4,'LineStyle',':')
+% hline5 = refline([0 74.3418]);
+% set(hline5,'LineStyle',':')
+% 
+% subplot(2,2,3)
+% plot(t0,kepler.ECC)
+% title('Change of eccentricity over time')
+% xlabel('Time [days]')
+% ylabel('Eccentricity [-]')
+% 
+% subplot(2,2,4)
+% plot(t0,kepler.SMA)
+% title('Change of semi-major axis over time')
+% xlabel('Time [days]')
+% ylabel('Semi-major axis [m]')
+% hline6 = refline([0 3366000]);
+% set(hline6,'LineStyle',':')
+
 
 %Define Event Function, target orbit above Moon surface
 function [value,isterminal,direction] = CrossMoonOrbit(t2,y2)
@@ -191,25 +175,20 @@ direction = 0;
 end
 
 function [value,isterminal,direction] = FirstRAAN(t,y)
-value = sqrt((y(1)-y(7)+2239538.05808371)^2 +(y(2)-y(8)+672206.984197519)^2 + (y(3)-y(9)+2421273.02400838)^2)-37000;
+value = sqrt((y(1)-y(7)+2269100)^2 +(y(2)-y(8)+564400)^2 + (y(3)-y(9)+2421300)^2)-8126.5;
 isterminal = 1;
 direction = -1;
 end
 
 function [value,isterminal,direction] = SecondRAAN(t,y)
-value = sqrt((y(1)-y(7)+521800)^2 +(y(2)-y(8)+2274600)^2 + (y(3)-y(9)+2425700)^2)-100000;
+value = sqrt((y(1)-y(7)+629900)^2 +(y(2)-y(8)+2247100)^2 + (y(3)-y(9)+2425700)^2)-5250.8;
 isterminal = 1;
 direction = -1;
 end
 
 function [value,isterminal,direction] = ThirdRAAN(t,y)
-value = sqrt((y(1)-y(7)-1709000)^2 +(y(2)-y(8)+1589200)^2 + (y(3)-y(9)+2425700)^2)-63460;
+value = sqrt((y(1)-y(7)-1631100)^2 +(y(2)-y(8)+1669000)^2 + (y(3)-y(9)+2425700)^2)-11254.6;
 isterminal = 1;
 direction = -1;
 end
 
-function [value,isterminal,direction] = RAAN(t,y)
-value = y(3)-y(9);
-isterminal=1;
-direction=1;
-end
