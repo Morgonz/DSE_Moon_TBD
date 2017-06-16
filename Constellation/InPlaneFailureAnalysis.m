@@ -2,7 +2,7 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 100;
 
 %t = 1:365*lifetime;
 [h,t] = WeibulProcessor(lifetime,'new',0);

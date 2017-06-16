@@ -7,7 +7,7 @@ degradation = 0.03; % 0.0525 from SMAD, 0.03 from badescu2012moon
 absorp = 0.91; % Solar absorptance
 
 [T,T_eclipse,cycles] = Eclipse(h,lifetime);
-T_eclipse = 0; % For NO ECLIPSE
+%T_eclipse = 0; % For NO ECLIPSE
 
 %% Power calculations
 %efficiency parameters
