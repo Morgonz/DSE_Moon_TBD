@@ -26,7 +26,7 @@ omega = 1/sqrt((rE^3)/(Mu_Earth+Mu_Sun));%rad/s
 for i = linspace(1,length(xE),length(xE))
     xE1 = xE(i);
     yE1 = yE(i);
-    if xE1>0
+        if xE1>0
         tet = atan(yE1/xE1);
     elseif xE1<0
         tet = atan(yE1/xE1)+pi;
@@ -37,14 +37,16 @@ for i = linspace(1,length(xE),length(xE))
             tet = -pi/2;   
         end
     end
+    
     xEr1 = xE(i)*cos(-tet)-yE(i)*sin(-tet);
     yEr1 = xE(i)*sin(-tet)+yE(i)*cos(-tet);
     xSr1 = xS(i)*cos(-tet)-yS(i)*sin(-tet);
     ySr1 = xS(i)*sin(-tet)+yS(i)*cos(-tet);
-    vxEr1 = vxE(i)+(omega*yEr1);
-    vyEr1 = vyE(i)-(omega*xEr1);
-    vxSr1 = vxS(i)+(omega*ySr1);
-    vySr1 = vyS(i)-(omega*xSr1);
+    
+    vxEr1 = vxE(i)*cos(-tet)-vyE(i)*sin(-tet)+xE(i)*omega*sin(-tet)+yE(i)*omega*cos(-tet);
+    vyEr1 = vxE(i)*sin(-tet)+vyE(i)*cos(-tet)-xE(i)*omega*cos(-tet)+yE(i)*omega*sin(-tet);
+    vxSr1 = vxS(i)*cos(-tet)-vyS(i)*sin(-tet)+xS(i)*omega*sin(-tet)+yS(i)*omega*cos(-tet);
+    vySr1 = vxS(i)*sin(-tet)+vyS(i)*cos(-tet)-xS(i)*omega*cos(-tet)+yS(i)*omega*sin(-tet);
     
     
     xEr = [xEr; xEr1];
@@ -55,5 +57,7 @@ for i = linspace(1,length(xE),length(xE))
     vyEr = [vyEr; vyEr1];
     vxSr = [vxSr; vxSr1];
     vySr = [vySr; vySr1];
+
 end
+
 yrot = [xEr yEr state(:,3) vxEr vyEr state(:,6) xSr ySr state(:,9) vxSr vySr state(:,12)];

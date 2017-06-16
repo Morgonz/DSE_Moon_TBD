@@ -28,8 +28,8 @@ T = 60*60*24*T_days; %s
 
 %%
 %for dV_kick = linspace(-100,-10,10)
-    for t_manouvre = linspace(1,180,1)
-        t_manouvre = 150
+    for t_manouvre = linspace(1,180,18)
+        
         t = 60*60*24*t_manouvre; %s
 
         [t1,y1] = ode113(@SunEarthAcc, [0 t], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
@@ -50,7 +50,14 @@ T = 60*60*24*T_days; %s
             plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
             plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
             hold on
-            %%% plotting Poincaré 
+            
+            %%% plotting in Inertial frame
+            figure(4);
+            plot3(y1(:,7),y1(:,8),y1(:,9));
+            plot3(y2(:,7),y2(:,8),y2(:,9));
+            hold on
+            
+            %%% NEW plotting Poincaré 
             figure(2);   %dx/dt-y plot
             plot(yrot2(end,8),yrot2(end,10),'k*');
             hold on
@@ -98,6 +105,11 @@ xlabel('y [m]')
 ylabel('dy/dt [m/s]')
 title(['Poincaré plots of dy/dt-y '])
 
+figure(4);
+title(['Plotting Inertial frame '])
+surf(X*R_Sun,Y*R_Sun, Z*R_Sun,'DisplayName','Sun position')
+axis equal
+legend('show')
 
 %% Event function
 function [value,isterminal,direction] = toofar(t,y)
@@ -120,7 +132,7 @@ ySr1 = y(7)*sin(-tet)+y(8)*cos(-tet);
 
 %value = 2*1.496547398746715e+09 - sqrt((xSr1-1.5110E+11)^2 + (ySr1)^2);
 %value = 1.496547398746715e+09 - abs(xSr1-1.5110E+11);   %rL - abs(xSr1 - (rE+rL)
-value = xSr1 - 1.4960E+11
+value = xSr1 - 1.4960E+11;
 
 isterminal = 1;
 direction = 0;
