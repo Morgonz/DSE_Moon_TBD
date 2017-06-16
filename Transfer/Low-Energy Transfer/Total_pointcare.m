@@ -19,12 +19,11 @@ vE = sqrt((Mu_Earth+Mu_Sun)/rE); %rot_p2at_p2ional speed of t_p2he Eart_p2h
 %Sun-Eart_p2h L2
 rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 
-%opt_p2ions of t_p2he int_p2egrat_p2or
+%options of t_p2he int_p2egrat_p2or
 options1_p2 = odeset('Reltol', 2.22045e-14);
 options2_p2 = odeset('Reltol', 2.22045e-14, 'Event', @toofar_p2);
 
 %define delt_p2a v of kick adn t_p2ot_p2al t_p2ime
-%dV_kick_p2 = -10; %in delt_p2a V
 T_days_p2 = 800;
 T_p2 = 60*60*24*T_days_p2; %s
 
@@ -35,7 +34,7 @@ DATA3 =[];
 %for dV_kick_p2 = linspace(-50,10,61)
     %display(['dV_kick_p2 is ', num2str(dV_kick_p2)])
 dV_kick_p2 = -10
-    for t_p2_manouvre = linspace(1,180,180)
+    for t_p2_manouvre = linspace(1,180,18)
         t_p2 = 60*60*24*t_p2_manouvre; %s
 
         [t1_p2,y1_p2] = ode113(@SunEarthAcc, [0 t_p2], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1_p2);
@@ -97,12 +96,13 @@ T_p3 = 60*60*24*T_days_p3; %s
 %for dV_kick_p3 = linspace(-30,50,81)
 dV_kick_p3 = 10;
     display(['dV_kick_p3 is ', num2str(dV_kick_p3)])
-    for t_manouvre_p3 = linspace(0.1,12.3,123)
+    for t_manouvre_p3 = linspace(0.1,12.3,12)
         t_p3 = 60*60*24*t_manouvre_p3; %s
 
         %[t1_p3,y1_p3] = ode113(@EarthMoonAcc,[0 -t_p3],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+896.5178218 0 ],options1_p3); %initial orbit
         [t1_p3,y1_p3] = ode113(@EarthMoonAcc,[0 -t_p3],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+234.91105658342964091 0 ],options1_p3);
         yrot1_p3 = RotatingFrameSunEarth(y1_p3);
+        
         % calculating velocities
         V_abs_p3 = sqrt(y1_p3(end,10)^2+y1_p3(end,11)^2+y1_p3(end,11)^2);
         V_abs_xy_p3 = sqrt(y1_p3(end,10)^2+y1_p3(end,11)^2);
