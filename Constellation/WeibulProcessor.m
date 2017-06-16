@@ -1,9 +1,9 @@
 function [ h,t ] = WeibulProcessor( lifetime, datamode, plotall )
 %WeibulProcessor Generate hazard curve on basis of selected statistical data
-%   Lifetime in years, datamode inputs are: micro, 2000, comms, comp
+%   Lifetime in years, datamode inputs are: micro, 2000, comms, comp, new
 
 %% Weibul data selection
-datamode = string(datamode); %micro, 2000, comms, comp 
+datamode = string(datamode); %micro, 2000, comms, comp, new
 
 t = 1:365*lifetime; %Time in days
 %Weibull for microsats:
@@ -22,41 +22,86 @@ R_comms = exp(-(t/eta).^beta);
 beta =  0.3318; 
 eta = 1629; % days
 R_comp = exp(-(t/eta).^beta);
+%New weibull distribution
+alpha = 0.07102;
+eta1 = 368400*365;
+eta2 = 6.492*365;
+beta1 = 0.05344;
+beta2 = 6.859;
+R_new = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
 
 if strcmp('micro',datamode)
     %Weibull for microsats:
     beta =  0.2928; 
     eta = 10065; % days
     disp('datamode = micro')
+    R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
+    f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
+    h = f./R;
 elseif strcmp('2000',datamode)
     %Weibull for small sats after 2000:
     beta =  0.3256; 
     eta = 2180; % days 
     disp('datamode = 2000')
+    R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
+    f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
+    h = f./R;
 elseif strcmp('comp',datamode)
     %Weibull for communication missions:
     beta =  0.4023; 
     eta = 6524; % days
     disp('datamode = comms')
+    R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
+    f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
+    h = f./R;
 elseif strcmp('comms',datamode)
     %Weibull for commercially produced:
     beta =  0.3318; 
     eta = 1629; % days
     disp('datamode = comp')
+    R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
+    f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
+    h = f./R;
+elseif strcmp('manual',datamode)
+    %Manually adapted Weibul:
+    beta =  0.1; 
+    eta = 1629; % days
+    disp('datamode = comp')
+    R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
+    f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
+    h = f./R;
+elseif strcmp('new',datamode)
+    alpha = 0.07102;
+    eta1 = 368400*365;
+    eta2 = 6.492*365;
+    beta1 = 0.05344;
+    beta2 = 6.859;
+    R = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
+    R = horzcat(R(1:1387),0.947*ones(1,t(end)-1387));
+    f = alpha*beta1/eta1.*(t/eta1).^(beta1-1).*exp(-(t/eta1).^beta1)+(1-alpha)*beta2/eta2.*(t/eta2).^(beta2-1).*exp(-(t/eta2).^beta2);
+    h = f(1:1387)./R(1:1387);
+    h_2end = h(end);
+    h = horzcat(h,h_2end*ones(1,t(end)-1387));
+%     alpha = 0.07102;
+%     eta1 = 368400*365;
+%     eta2 = 6.492*365;
+%     beta1 = 0.05344;
+%     beta2 = 6.859;
+%     R = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
+%     f = alpha*beta1/eta1.*(t/eta1).^(beta1-1).*exp(-(t/eta1).^beta1)+(1-alpha)*beta2/eta2.*(t/eta2).^(beta2-1).*exp(-(t/eta2).^beta2);
+%     h = f./R;
 else
-    error('datamode not recognised. Please use "micro", "2000", "comms" or "comp" as datamode input.')
+    error('datamode not recognised. Please use "micro", "2000", "comms", "comp" or "new" as datamode input.')
     
 end
 
 %% Generate Weibul curve and determine hazard rate
-R = exp(-(t/eta).^beta); %Set probability distribution with chosen dataset
-f = beta/eta.*(t/eta).^(beta-1).*exp(-(t/eta).^beta);
-h = f./R;
+
 
 if plotall
     figure;
-    plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,'LineWidth',1.5);
-    legend('Microsat','After 2000','comms','comp')
+    plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,t,R_new,'LineWidth',1.5);
+    legend('Microsat','After 2000','comms','comp','new')
     labelloc = 0:365:365*lifetime;
     axis([0 t(end) 0 1])
     xticks(labelloc)
@@ -82,7 +127,7 @@ if plotall
     xticklabels(0:lifetime)
     xlabel('Time [years]','FontSize',12)
 %     title('Selected mode details')
-    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Inverse hazard rate','Location','southwest');
+    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Probability density','Inverse hazard rate','Location','southwest');
     set(lgnd,'FontSize',10); 
 end
 % Verification data

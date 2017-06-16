@@ -1,33 +1,36 @@
 %Initial values
-DOD_battery = 0.4;
-P_req = 32; %Watt
-N_cells = 30; %initial guess (sized in tool)
-incl_constant = 50.2+6.68;
+DOD_battery = 0.5; %capacity reduction to 70% at EOL
+P_req = 45.40*1.3; %Watt + 0.3 MARGIN (smad)
+N_cells = 80; %initial guess (sized in tool)
+incl_constant = 50.2+1.54;%53;
 
 [T,T_eclipse] = Eclipse(1629e3,5);
-T = round(T);
+T = round(T);%12.25*3600*24;
 T_eclipse = round(T_eclipse);
+% T_eclipse = 0;
 T_sun = T-T_eclipse;
+temp_ref = 28+273.15; %K nominal operation
 Temp_panel = ThermalData(incl_constant,1629e3);
-% Temp_panel = ones(size(ThermalData(incl_constant,1629e3)))*120;
+% Temp_panel = ones(size(Temp_panel))*(335.7);
 Irradiance = horzcat(ones(1,round(T_sun)),zeros(1,round(T_eclipse)));
 inclination = cos(deg2rad(incl_constant))*ones(1,round(T));
 E_batt = zeros(round(T)+1,1);
 P_sol = zeros(round(T)+1,1);
 DT = Temp_panel-temp_ref;
 L_D = (1-0.03)^5;
-absorbtance = 0.9;
+absorbtance = 0.91;
 
 B_upperbound = 6;
-temp_ref = 28+273.15; %K nominal operation
+
 E_batt(1) = 0;
 
-%From azur space 80*80
+
 %BOL at 1376 W/m^2
+A_cell = 60.36;%cm^2
 DVDT = -6.7e-3; %V/K at max power
 DIDT = 0.24e-3; %A/K at max power
-V_mp = 2411e-3; %Nominal voltage at mpp
-I_mp = 1007e-3; %Nominal current at mpp
+V_mp = 2.411; %Nominal voltage at mpp
+I_mp = 1.007; %Nominal current at mpp
 sizing = 1;
 
 
@@ -56,13 +59,18 @@ while sizing
     end
 end
 
-A_tot = N_cells*0.08*0.08;
+A_tot = N_cells*A_cell/10000;
 P_inc = A_tot*1300;
 
 BattCapacity = (max(E_batt)-min(E_batt))/(DOD_battery);
 E_batt = E_batt + (BattCapacity-max(E_batt));
 SOC_batt = E_batt./BattCapacity;
+
 %% Plot
+
+% VerificationData = [0.1517502602 0.1357155525 0.1282785684 0.127196632 0.1271362953];
+% VerificationPoint= [1 2000 5000 9000 14509];
+
 figure;
 plot(0:T,P_sol./P_inc)
 figure;
@@ -79,8 +87,27 @@ xlabelloc = 0:3600:T;
 xlim([0 T(end)])
 xticks(xlabelloc)
 xticklabels(0:length(xlabelloc))
-legend('Solar panel','Requirement','Battery SOC','Location','NorthWest')
+legend('Solar panel power output','Power Requirement','Battery SOC','Location','South')
 
-notice_pwrsub = ['Solar Cells: ' num2str(N_cells) '. Solar panel area: '...
-    num2str(A_tot) '. Battery charge[Wh]: ' num2str(BattCapacity)];
+
+
+%% Sizing
+%Battery
+%Selected: Saft VL51ES
+Batt_sp_energy = 170;
+Batt_Volume = 2*pi*0.054*0.222;
+V = 3.6;
+Capacity = 51; % Ah
+Mass_batt = 1.08; % kg
+Batt_energy = 180; % Wh
+Batt_margin = Batt_energy/(BattCapacity/0.7);
+
+%Solar cells
+%Selected: Azur space 3g30c
+mass_per_area = 1.3+0.59+1.37;
+Mass_panel = mass_per_area * A_tot;
+Mass_total = Mass_panel + Mass_batt;
+
+notice_pwrsub = ['Solar Cells: ' num2str(N_cells) '. Solar panel area[cm^2]: '...
+    num2str(A_tot) '. Battery charge[Wh]: ' num2str(BattCapacity) '. System mass[kg]: ' num2str(Mass_total)];
 disp(notice_pwrsub)

@@ -8,7 +8,7 @@ T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
 
 %t = 1:365*lifetime;
-[h,t] = WeibulProcessor(lifetime,'micro',0);
+[h,t] = WeibulProcessor(lifetime,'new',0);
 prob = 1-h;
 
 %launch settings
@@ -22,16 +22,16 @@ sats = 1:1:p;
 ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
-iterator = 1:8;
+iterator = 1:4;
 
 dat1 = zeros(length(iterator),1);
 dat2 = zeros(length(iterator),1);
 dat3 = zeros(length(iterator),1);
 
-lable = 'n_spare_start'; %EDIT THIS
+lable = 'n_restock'; %EDIT THIS
 
 for itvl=iterator
-    n_spare_start = itvl; %EDIT THIS
+    n_restock = itvl; %EDIT THIS
     disp(itvl);
     %Initialise
     maxbroken = [];

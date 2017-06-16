@@ -2,10 +2,10 @@
 n = 6; % orbit planes
 p = 6; % sats/orbit
 lifetime = 5; %years
-n_cycles = 10;
+n_cycles = 1000;
 
 %Request weibulcurve
-[h,t] = WeibulProcessor(lifetime,'micro',0);
+[h,t] = WeibulProcessor(lifetime,'new',0);
 prob = 1-h;
 T_replace = 10; % time to replace a broken satellite
 %t = 1:365*lifetime;
@@ -130,7 +130,7 @@ timefrac = mean(sum(sysfailtime))/(365*lifetime);
 areafrac = timefrac*2/(n*p);
 notice_end = ['Adjacent failure%: ' num2str(downfrac*100) ', downtime%: ' num2str(timefrac*100) ', Total broken: ' num2str(flist(end))];
 disp(notice_end)
-
+figure;
 yyaxis left
 plot(t,mean(sysfailtime,2),'LineWidth',1.5)
 ylabel('Adjacent plane failure probabilty','FontSize',12)
