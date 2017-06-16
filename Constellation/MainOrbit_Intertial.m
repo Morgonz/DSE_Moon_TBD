@@ -17,7 +17,7 @@ alt_sat = 500e3;
 GMm = abs(gx*(Rm+alt_sat)^2);
 v_sat = sqrt(GMm/(Rm+alt_sat));
 Ts = 2*pi*sqrt((Rm+alt_sat)^3/GMm); % sec
-NT = 2;
+NT = 5;
 T = NT*Ts;
 
 %% Satellite parameters
@@ -37,8 +37,7 @@ options = odeset('RelTol',1e-6);
 [t0,y0] = ode45(@sat2BPdeg0,[0 T],[x_sat y_sat z_sat vx_sat vy_sat vz_sat],options);
 [tH,yH] = ode45(@sat2BPdegH,[0 T],[x_sat y_sat z_sat vx_sat vy_sat vz_sat],options);
 
-[Xm,Ym,Zm] = 
-sphere(40);  % Equatorial radius (km) 1738.1
+[Xm,Ym,Zm] = sphere(40);  % Equatorial radius (km) 1738.1
 
 %% Kepler Elements
 kepler=getkepler(yH(:,1),yH(:,2),yH(:,3),yH(:,4),yH(:,5),yH(:,6));
@@ -52,11 +51,11 @@ plot(tH,kepler.ECC);
 title('ECC')
 
 figure
-plot(tH,kepler.INC);
+plot(tH,rad2deg(kepler.INC));
 title('INC')
 
 figure
-plot(tH,kepler.RAAN);
+plot(tH,rad2deg(kepler.RAAN));
 title('RAAN')
 
 

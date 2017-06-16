@@ -18,25 +18,29 @@ rL = rE*(Mu_Earth/(3*Mu_Sun))^(1/3);
 [X,Y,Z] = sphere(40);
 
 %options of the integrator
-options1 = odeset('RelTol', 1e-18);
-options2 = odeset('RelTol', 1e-18, 'Events', @toofar);
+options1 = odeset('RelTol', 2.22045e-14);
+options2 = odeset('RelTol', 2.22045e-14, 'Events', @toofar);
 
 %define delta v of kick adn total time
-dV_kick = 1 %in delta V
-T_days = 800;
+dV_kick = -1 %in delta V
+T_days = 400;
 T = 60*60*24*T_days; %s
 
 
-for t_manouvre = linspace(1,180,180)
+for t_manouvre = linspace(1,180,20)
     t = 60*60*24*t_manouvre; %s
 
     [t1,y1] = ode113(@SunEarthAcc, [0 t], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
     yrot1 = RotatingFrameSunEarth(y1);
-    angle = atan2(yrot1(end,8),(yrot1(end,7)-(rE+rL)));
-    dv_x = dV_kick*sin(angle);
-    dv_y = dV_kick*-cos(angle);
+    
+    % calculating velocities
+    V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2);
+    V_abs_xy = sqrt(y1(end,10)^2+y1(end,11)^2);
+    dv_x = (y1(end,10)/V_abs)*dV_kick;
+    dv_y = (y1(end,11)/V_abs)*dV_kick;
+    dv_z = (y1(end,12)/V_abs)*dV_kick;
 
-    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7)+dV_kick*sin(angle) y1(end,8)-dV_kick*cos(angle) y1(end,9) y1(end,10) y1(end,11) y1(end,12)],options2);
+    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
     yrot2 = RotatingFrameSunEarth(y2);
     
     if yrot2(end,7)<1.514E+11
@@ -45,6 +49,11 @@ for t_manouvre = linspace(1,180,180)
         plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
     end
 end
+%figure
+%plot(t,yrot2(:,4))
+%figure
+%plot(t,yrot2(:,5))
+
 
 title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
 
@@ -55,10 +64,10 @@ hold off
 xlabel('x [m]')
 ylabel('y [m]')
 zlabel('z [m]')
-legend([L2 Earth],{'Earth-Sun L2','Earth'})
+%legend([L2 Earth],{'Earth-Sun L2','Earth'})
 axis equal
 axis vis3d
-%}
+
 
 
 function [value,isterminal,direction] = toofar(t,y)

@@ -5,7 +5,7 @@ classdef getkepler
         vx;vy;vz;
         
         hx;hy;hz;
-        SMA;ECC;RAAN;INC;S;
+        SMA;ECC;RAAN;INC;AOP;S;
     end
     methods
         
@@ -31,10 +31,10 @@ classdef getkepler
             %ECCENTRICITY
             obj.ECC=zeros(obj.S,1);
             r=sqrt(obj.rx.^2+obj.ry.^2+obj.rz.^2);
-            e1=(((obj.vy.*obj.hz)-(obj.vz.*obj.hy))/obj.mu)-(obj.rx./r);
-            e2=(((obj.vz.*obj.hx)-(obj.vx.*obj.hz))/obj.mu)-(obj.ry./r);
-            e3=(((obj.vx.*obj.hy)-(obj.vy.*obj.hx))/obj.mu)-(obj.rz./r);
-            obj.ECC=sqrt(e1.^2+e2.^2+e3.^2);
+            ex=(((obj.vy.*obj.hz)-(obj.vz.*obj.hy))/obj.mu)-(obj.rx./r);
+            ey=(((obj.vz.*obj.hx)-(obj.vx.*obj.hz))/obj.mu)-(obj.ry./r);
+            ez=(((obj.vx.*obj.hy)-(obj.vy.*obj.hx))/obj.mu)-(obj.rz./r);
+            obj.ECC=sqrt(ex.^2+ey.^2+ez.^2);
             
             %INCLINATION
             obj.INC=(acos(obj.hz./(sqrt(obj.hx.^2+obj.hy.^2+obj.hz.^2))));
@@ -55,6 +55,19 @@ classdef getkepler
                     obj.RAAN(i)=2*pi-obj.RAAN(i);
                 end
             end
+            
+            %ARGUMENT OF PERIAPSE
+            obj.AOP=zeros(obj.S,1);
+            for i=(1:obj.S)
+                a=nx(i)*ex(i);
+                b=ny(i)*ey(i);
+                d=(ex(i)^2+ey(i)^2+ez(i)^2)*(nx(i)^2+ny(i)^2);
+                obj.AOP(i)=acos((a+b)/d^.5);
+                if ez(i)<0
+                    obj.AOP(i)=2*pi-obj.AOP(i);
+                end
+            end
+            
         end
         
     end
