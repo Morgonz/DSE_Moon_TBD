@@ -62,8 +62,8 @@ for kdx=1:T
 
     [X,Y,Z] = keplerplot(e,i,RAAN,omega,phase,h);
     
-%     scatter3(X(t),Y(t),Z(t),25,'filled');
-%     plot3(X,Y,Z,'LineWidth',1.25);
+    scatter3(X(t),Y(t),Z(t),25,'filled');hold on;
+    plot3(X,Y,Z,'LineWidth',1.25);
     
     if ID==601||ID==602||ID==603||ID==604||ID==605
         ID = ID - 500 + 1;

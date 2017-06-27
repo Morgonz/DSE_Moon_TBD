@@ -112,4 +112,3 @@ M = M_batt + M_panel;
 
 notice_pwr = ['Scenario = ' scen ' A_panel= ' num2str(A_sol) ' C_bat [Wh]= ' num2str(C_bat) ' DownFrac = ' num2str(freq_MAX+freq_PEN)];
 disp(notice_pwr)
-
