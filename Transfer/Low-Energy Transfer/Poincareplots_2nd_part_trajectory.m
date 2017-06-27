@@ -28,8 +28,8 @@ T = 60*60*24*T_days; %s
 
 %%
 %for dV_kick = linspace(-100,-10,10)
-    for t_manouvre = linspace(1,180,1)
-        t_manouvre = 150
+    for t_manouvre = linspace(1,180,180)
+        %t_manouvre = 150
         t = 60*60*24*t_manouvre; %s
 
         [t1,y1] = ode113(@SunEarthAcc, [0 t], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
