@@ -300,11 +300,11 @@ time=1:Period*n;
 % 
 %  grid on
 %  legend('Sp panel','Sm panel')
- figure;
+
+
+%  figure;
  Temps_out = Tmax_Sp(Period+1:Period*2);
- 
- 
-plot(1:Period,Temps_out(1:end))
+%  plot(1:Period,Temps_out(1:end))
  
  
 

@@ -1,11 +1,11 @@
 %inputs
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
-lifetime = 5; %years
-n_cycles = 100;
+lifetime = 15; %years
+n_cycles = 10000;
 
 %t = 1:365*lifetime;
-[h,t] = WeibulProcessor(lifetime,'new',0);
+[h,t] = WeibulProcessor(lifetime,'newer',0);
 prob = 1-h;
 
 %launch settings
@@ -47,6 +47,11 @@ for cycles=1:n_cycles
     launchnew = 0;
     n_spare = n_spare_start;
     Tsend = 0;
+    
+    
+    if cycles/n_cycles == 0.10||cycles/n_cycles == 0.20||cycles/n_cycles == 0.30||cycles/n_cycles == 0.40||cycles/n_cycles == 0.50||cycles/n_cycles == 0.60||cycles/n_cycles == 0.70||cycles/n_cycles == 0.80||cycles/n_cycles == 0.90
+        disp(['%'])
+    end
 
     for s=1:nsamples
         sparelist(s,cycles) = n_spare;
@@ -110,6 +115,8 @@ for cycles=1:n_cycles
                 else
                     status(e(1),e(2)) = status(e(1),e(2)) + 1;
                 end
+            else 
+                launchnew = 1;
             end
         end
         %Remove repaired sats from the stat register
@@ -173,7 +180,7 @@ llist = mean(launchlist,2);
 plot(1:length(llist),llist,'LineWidth',1); 
 flist = mean(faillist,2);
 plot(1:length(flist),flist,'LineWidth',1.5); hold off;
-title('Spares status per orbit: Averages','FontSize',16)
+% title('Spares status per orbit: Averages','FontSize',16)
 xlabel('Time [days]','FontSize',12)
 ylabel('Number','FontSize',12)
 ylim([0 1.25*max([max(slist),max(flist),max(llist)])])
@@ -182,7 +189,7 @@ yyaxis left
 sftlist = mean(sysfailtime,2);
 plot(1:length(sftlist),sftlist,'LineWidth',1); 
 ylabel('Plane system failure probability [-]','FontSize',12)
-ylim([0 0.01+max(sftlist)])
+ylim([0 max(sftlist)*1.1+0.00005])
 
 xlabelloc = 0:365:365*lifetime;
 xlim([0 t(end)])
@@ -190,7 +197,7 @@ xticks(xlabelloc)
 xticklabels(0:lifetime)
 xlabel('Time [years]','FontSize',12)
 legend('Adjacent failure probability','Average spares in plane','Average launches arriving','Average broken satellites','Location','northeast')
-
+set(gca,'FontSize',12)
 figure; %Case studies
 % casetitle = suptitle('Statistical analysis');
 % set(casetitle,'FontSize',18,'FontWeight','normal')
@@ -198,27 +205,27 @@ figure; %Case studies
 subplot(1,3,1) %Satellite failures plot
 endfail = faillist(1825,:);
 histogram(endfail,'EdgeAlpha',0.4,'FaceColor','r','Normalization','probability'); 
-xlabel('# failed sats at 5 years','FontSize',12)
+xlabel('Failed sats at 5 years','FontSize',12)
 ylabel('Probability of occurrence [-]','FontSize',14)
 xlim([-0.5 max(endfail)+0.5])
 xticks(0:max(endfail))
 xticklabels(0:max(endfail))
-
+set(gca,'FontSize',12)
 subplot(1,3,2) % Launch amount plot
 endlaunch = launchlist(1825,:);
 histogram(endlaunch,'EdgeAlpha',0.4,'FaceColor','b','Normalization','probability');
-xlabel('# launches at 5 years','FontSize',12)
+xlabel('Launches at 5 years','FontSize',12)
 xlim([-0.5 max(endlaunch)+0.5])
 xticks(0:max(endlaunch))
 xticklabels(0:max(endlaunch))
-
+set(gca,'FontSize',12)
 subplot(1,3,3) % Minimum spares present plot
 minspare = min(sparelist);
 histogram(minspare,'EdgeAlpha',0.4,'FaceColor','g','Normalization','probability');
-xlabel('Minimum spares present in plane','FontSize',12)
+xlabel('Minimum spares in plane','FontSize',12)
 xlim([-0.5 max(minspare)+0.5])
 xticks(0:max(minspare))
 xticklabels(0:max(minspare))
-
-notice_out = ['Spares in orbit: ' num2str(slist(end)) '. Launches: ' num2str(llist(end)) '. Failures: ' num2str(flist(end)) '. Prob of a failure in lifetime: ' num2str(mean(mean(sysfailtime)>0)*100) '. Downtime frac:' num2str(mean(mean(sysfailtime))*100) '.'];
+set(gca,'FontSize',12)
+notice_out = ['Spares in orbit: ' num2str(slist(end)) '. Launches: ' num2str(llist(end)) '. Sat failures: ' num2str(flist(end)) '. Prob of a failure in lifetime: ' num2str(mean(mean(sysfailtime)>0)*100) '. Downtime frac:' num2str(mean(mean(sysfailtime))*100) '.'];
 disp(notice_out)

@@ -2,12 +2,12 @@
 n = 6; % orbit planes
 p = 6; % sats/orbit
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 10000;
 
 %Request weibulcurve
-[h,t] = WeibulProcessor(lifetime,'new',0);
+[h,t] = WeibulProcessor(lifetime,'newer',0);
 prob = 1-h;
-T_replace = 10; % time to replace a broken satellite
+T_replace = 10; % time to replace a broken satellite [days]
 %t = 1:365*lifetime;
 
 nsamples = t(end);
@@ -35,6 +35,10 @@ for cycles=1:n_cycles
     failure_IDs = [];
     stats = [];
     broken = [];
+    
+    if cycles/n_cycles == 0.10||cycles/n_cycles == 0.20||cycles/n_cycles == 0.30||cycles/n_cycles == 0.40||cycles/n_cycles == 0.50||cycles/n_cycles == 0.60||cycles/n_cycles == 0.70||cycles/n_cycles == 0.80||cycles/n_cycles == 0.90
+        disp(['%'])
+    end
 
     for s=1:nsamples
         faillist(s,cycles) = satfail;
@@ -132,9 +136,10 @@ notice_end = ['Adjacent failure%: ' num2str(downfrac*100) ', downtime%: ' num2st
 disp(notice_end)
 figure;
 yyaxis left
+
 plot(t,mean(sysfailtime,2),'LineWidth',1.5)
 ylabel('Adjacent plane failure probabilty','FontSize',12)
-
+ylim([0 0.004])
 yyaxis right
 flist = mean(faillist,2);
 plot(1:length(flist),flist,'LineWidth',1.5)
@@ -145,6 +150,6 @@ xticks(labelloc)
 xticklabels(0:lifetime)
 xlabel('Time [years]','FontSize',12)
 
-dim = [.2 .3 0 0];
-str = 'Straight Line Plot from 1 to 10';
-annotation('textbox',dim,'String',notice_end,'FitBoxToText','on');
+% dim = [.2 .3 0 0];
+% str = 'Straight Line Plot from 1 to 10';
+% annotation('textbox',dim,'String',notice_end,'FitBoxToText','on');

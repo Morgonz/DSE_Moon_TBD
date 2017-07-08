@@ -2,19 +2,19 @@
 p = 6; % sats/orbit
 n = 1; % single orbit analysis
 lifetime = 5; %years
-n_cycles = 1000;
+n_cycles = 10000;
 
 T_resend = 183; % days in 6 months of resend time through launch
 T_replace = 10; % time to replace a broken satellite from spares
 
 %t = 1:365*lifetime;
-[h,t] = WeibulProcessor(lifetime,'new',0);
+[h,t] = WeibulProcessor(lifetime,'newer',0);
 prob = 1-h;
 
 %launch settings
-n_spare_start = 4; %spares at initial condition
-launch_thresh = 1; %spares amount when new launch is ordered
-n_restock = 2; %amount of spares added to a plane at launch arrival
+n_spare_start = 2; %spares at initial condition 'Initial amount of spares in plane'
+launch_thresh = 0; %spares amount when new launch is ordered 'Launch request threshold'
+n_restock = 2; %amount of spares added to a plane at launch arrival 'Amount of satellites delivered in a launch'
 
 %Construct satellite IDs
 orbits = 100:100:n*100;
@@ -22,16 +22,16 @@ sats = 1:1:p;
 ID = repmat(orbits,p,1) + repmat(sats',1,n);
 [rdim,cdim] = size(ID);
 
-iterator = 1:4;
+iterator = 0:2;
 
 dat1 = zeros(length(iterator),1);
 dat2 = zeros(length(iterator),1);
 dat3 = zeros(length(iterator),1);
 
-lable = 'n_restock'; %EDIT THIS
+lable = 'Launch request threshold'; %EDIT THIS
 
 for itvl=iterator
-    n_restock = itvl; %EDIT THIS
+    launch_thresh = itvl; %EDIT THIS
     disp(itvl);
     %Initialise
     maxbroken = [];
@@ -121,6 +121,8 @@ for itvl=iterator
                     else
                         status(e(1),e(2)) = status(e(1),e(2)) + 1;
                     end
+                else
+                    launchnew = 1;
                 end
             end
             %Remove repaired sats from the stat register
@@ -177,19 +179,18 @@ for itvl=iterator
      dat2(itvl-iterator(1)+1) = mean(endlaunch);
      dat3(itvl-iterator(1)+1) = sum(sftlist)/t(end);
 end
-
+%% plots
 figure;
 xlabel(lable)
 yyaxis left
-plot(iterator,dat1);
-ylabel('mean days of 0 spares present')
+plot(iterator,dat1,iterator,dat2,'LineWidth',1.5);
+ylabel('Number')
 
 
 yyaxis right
-plot(iterator,dat2);
-ylabel('mean launches after 5 years')
-figure;
-plot(iterator,dat3);
-xlabel(lable)
-ylabel('lifetime system failure fraction')
-
+plot(iterator,dat3,'LineWidth',1.5);
+ylabel('Probability [-]')
+legend('mean days of 0 spares present','mean launches after 5 years','lifetime system failure')
+xticks(0:max(iterator))
+xticklabels(0:max(iterator))
+set(gca,'FontSize',14)

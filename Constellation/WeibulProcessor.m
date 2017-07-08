@@ -29,6 +29,15 @@ eta2 = 6.492*365;
 beta1 = 0.05344;
 beta2 = 6.859;
 R_new = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
+%Newer weibull distribution
+alpha = 0.9607;
+eta1 = 10e7*365;
+eta2 = 7.3*365;
+beta1 = 0.2101;
+beta2 = 2.754;
+R_3 = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
+f_3 = alpha*beta1/eta1.*(t/eta1).^(beta1-1).*exp(-(t/eta1).^beta1)+(1-alpha)*beta2/eta2.*(t/eta2).^(beta2-1).*exp(-(t/eta2).^beta2);
+h_3 = f_3./R_3;
 
 if strcmp('micro',datamode)
     %Weibull for microsats:
@@ -90,6 +99,15 @@ elseif strcmp('new',datamode)
 %     R = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
 %     f = alpha*beta1/eta1.*(t/eta1).^(beta1-1).*exp(-(t/eta1).^beta1)+(1-alpha)*beta2/eta2.*(t/eta2).^(beta2-1).*exp(-(t/eta2).^beta2);
 %     h = f./R;
+elseif strcmp('newer',datamode)
+    alpha = 0.9607;
+    eta1 = 1e7*365;
+    eta2 = 7.3*365;
+    beta1 = 0.2101;
+    beta2 = 2.754;
+    R = alpha*exp(-(t/eta1).^beta1)+(1-alpha)*exp(-(t/eta2).^beta2);
+    f = alpha*beta1/eta1.*(t/eta1).^(beta1-1).*exp(-(t/eta1).^beta1)+(1-alpha)*beta2/eta2.*(t/eta2).^(beta2-1).*exp(-(t/eta2).^beta2);
+    h = f./R;
 else
     error('datamode not recognised. Please use "micro", "2000", "comms", "comp" or "new" as datamode input.')
     
@@ -100,8 +118,8 @@ end
 
 if plotall
     figure;
-    plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,t,R_new,'LineWidth',1.5);
-    legend('Microsat','After 2000','comms','comp','new')
+    plot(t,R_micro,t,R_2000,t,R_comms,t,R_comp,t,R_new,t,R_3,'LineWidth',1.5);
+    legend('Microsat','After 2000','comms','comp','new','newer')
     labelloc = 0:365:365*lifetime;
     axis([0 t(end) 0 1])
     xticks(labelloc)
@@ -112,8 +130,9 @@ if plotall
     
     figure;    
     yyaxis left
-    plot(t,R,'LineWidth',2); hold on;
-    plot(t,f,'LineWidth',2);hold off;
+    plot(t,R,'LineWidth',2);
+%     plot(t,f,'LineWidth',2);hold off;
+    ylim([R(end) 1])
     ylabel('Probability [-]','FontSize',12)
     
     yyaxis right
@@ -127,7 +146,7 @@ if plotall
     xticklabels(0:lifetime)
     xlabel('Time [years]','FontSize',12)
 %     title('Selected mode details')
-    lgnd = legend('Weibull: beta=0.2928, eta = 10065','Probability density','Inverse hazard rate','Location','southwest');
+    lgnd = legend('2-Weibull mixture reliability curve','Hazard curve','Location','southwest');
     set(lgnd,'FontSize',10); 
 end
 % Verification data
