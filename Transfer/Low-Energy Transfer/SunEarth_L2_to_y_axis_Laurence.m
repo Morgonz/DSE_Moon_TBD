@@ -22,31 +22,43 @@ options1 = odeset('RelTol', 2.22045e-14);
 options2 = odeset('RelTol', 2.22045e-14, 'Events', @toofar);
 
 %define delta v of kick adn total time
-dV_kick = -1 %in delta V
-T_days = 400;
+dV_kick = -10 %in delta V
+T_days = 181.1918
+%T_days = 182
 T = 60*60*24*T_days; %s
 
 
-for t_manouvre = linspace(1,180,20)
+%for t_manouvre = linspace(1,180,181)
+for t_manouvre = [ 59.14 ]
+    
     t = 60*60*24*t_manouvre; %s
 
     [t1,y1] = ode113(@SunEarthAcc, [0 t], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
     yrot1 = RotatingFrameSunEarth(y1);
     
-    % calculating velocities
+    
+    
+    % calculating velocities, use only the X and Y velocities
     V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2);
     V_abs_xy = sqrt(y1(end,10)^2+y1(end,11)^2);
-    dv_x = (y1(end,10)/V_abs)*dV_kick;
-    dv_y = (y1(end,11)/V_abs)*dV_kick;
-    dv_z = (y1(end,12)/V_abs)*dV_kick;
-
-    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
+    dv_x = (y1(end,10)/V_abs_xy)*dV_kick;
+    dv_y = (y1(end,11)/V_abs_xy)*dV_kick;
+    dv_z = (y1(end,12)/V_abs_xy)*dV_kick;
+    
+    %without z-velocity 
+    [t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)],options2);
+    %with z-velocity included
+    %[t2,y2] = ode113(@SunEarthAcc, [0 T-t], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
     yrot2 = RotatingFrameSunEarth(y2);
     
+    %if yrot2(end,7)<1.514E+11 & yrot2(end,8)> 1.0E+8 & yrot2(end,8)< 5.0E+8
     if yrot2(end,7)<1.514E+11
         hold on
-        plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9));
-        plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9));
+        %Sat_trajectory = plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9),'r-','DisplayName','Satellite trajectory');
+        Sat_trajectory = plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9),'DisplayName','Possible satellite trajectories');
+        orbit_extraction = plot3(yrot1(end,7),yrot1(end,8),yrot1(end,9),'ko','DisplayName','Transfer orbit part 2 injections');
+        %plot3(yrot1(end,7),yrot1(end,8),yrot1(end,9),'k<','DisplayName','orbit kick');
+        %plot3(yrot2(:,7),yrot2(:,8),yrot2(:,9),'r-','DisplayName',['manouvre at', num2str(t_manouvre) ]);
     end
 end
 %figure
@@ -54,17 +66,30 @@ end
 %figure
 %plot(t,yrot2(:,5))
 
+%only the Halo orbit itself
+T_halo = 178*60*60*24
+[t_halo,y_halo] = ode113(@SunEarthAcc, [0 T_halo], [rE 0 0 0 vE 0 rE+rL-120000000 0 0 1.06749 vE+426 1.260005700065],options1);
+yrot_halo = RotatingFrameSunEarth(y_halo);
+%halo_orbit = plot3(yrot_halo(:,7),yrot_halo(:,8),yrot_halo(:,9),'b--','DisplayName','Sun-Earth L2 halo orbit');
 
-title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
 
-L2 = plot3(rE+rL,0,0,'k*','DisplayName','Earth-Sun L2')
-Earth = plot3(rE,0,0,'bo','DisplayName','Earth')
+
+
+%title(['Asymptotic trajectories leaving Earth-Sun L2 with an deltaV kick of: ' num2str(dV_kick) 'm/s'])
+title('Trajectories leaving the Sun-Earth L2 halo orbit towards Earth inertial y-axis')
+
+Earth_yaxis = plot([1.496e+11 1.496e+11],[0 6e+8],'k--','DisplayName',' Earth inertial y-axis')
+
+Earth = plot3(rE,0,0,'b.','MarkerSize',25,'DisplayName','Earth location')
+L2 = plot3(rE+rL,0,0,'k*','DisplayName','Sun-Earth L2')
 %surf(X*R_Sun,Y*R_Sun, Z*R_Sun,'DisplayName','Sun position')
 hold off
 xlabel('x [m]')
 ylabel('y [m]')
 zlabel('z [m]')
 %legend([L2 Earth],{'Earth-Sun L2','Earth'})
+legend([Sat_trajectory orbit_extraction Earth_yaxis L2 Earth])
+%legend('show')
 axis equal
 axis vis3d
 

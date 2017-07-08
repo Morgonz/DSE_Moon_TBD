@@ -30,8 +30,8 @@ v_L2 = rot_speed_Moon*(rL2);
 v_L2_orbit = rot_speed_Moon*(rL2+r_halo2_orbit);
 
 %options of the integrator
-options1 = odeset('RelTol', 1e-18);
-options2 = odeset('RelTol', 1e-18, 'Events', @toocloseEarth);
+options1 = odeset('RelTol', 2.22045e-14);
+options2 = odeset('RelTol', 2.22045e-14, 'Events', @toocloseEarth);
 
 %define delta v of kick adn total time
 dV_kick = -100; %in delta V

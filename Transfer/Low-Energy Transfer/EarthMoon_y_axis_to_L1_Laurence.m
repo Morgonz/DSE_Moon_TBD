@@ -48,13 +48,16 @@ T = 60*60*24*T_days; %s
 %integrator   (for t_manouvre = linspace(3.7,3.9,21)) 
 %% The big loop
 %
-for t_manouvre = linspace(0.1,12.25,1)
-    t_manouvre = 12
+%for t_manouvre = linspace(0.1,12.25,21)
+for t_manouvre = [0.000001 0.5 0.525 10.3 11 12]
+%for t_manouvre = [0.525
     t = 60*60*24*t_manouvre; %s
         
-    %[t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit_old 0 v_rM_L1+896.5178218 0 ],options1); %initial orbit
-    [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+234.91105658342964091 0 ],options1);
+    [t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit_old 0 v_rM_L1+896.5178218 0 ],options1); %initial orbit
+    %[t1,y1] = ode113(@EarthMoonAcc,[0 -t],[rM 0 0 0 vM 0  rL1 0 r_halo_orbit 0 v_L1+234.91105658342964091 0 ],options1);
     yrot1 = RotatingFrameSunEarth(y1);
+    
+    
     hold on
     % calculating velocities
     V_abs = sqrt(y1(end,10)^2+y1(end,11)^2+y1(end,11)^2);
@@ -63,30 +66,30 @@ for t_manouvre = linspace(0.1,12.25,1)
     dv_y = (y1(end,11)/V_abs)*dV_kick;
     dv_z = (y1(end,12)/V_abs)*dV_kick;
     
-    [t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x y1(end,11)+dv_y y1(end,12)+dv_z],options2);
+    [t2,y2] = ode113(@EarthMoonAcc, [-t -T], [y1(end,1) y1(end,2) y1(end,3) y1(end,4) y1(end,5) y1(end,6) y1(end,7) y1(end,8) y1(end,9) y1(end,10)+dv_x  y1(end,11)+dv_y  y1(end,12)+dv_z],options2);
     yrot2 = RotatingFrameSunEarth(y2);
-    
+     
     %plot the intitial halo
     hold on
     figure(2)   %intertial frame
     plot3(yrot1(:,7),yrot1(:,8),yrot1(:,9),'k','DisplayName','halo orbit');
     
+    only_above_radius = rM+10000000
     
-    if yrot2(end,7)>rM*1.0
+    if sqrt((y2(end,7)^2)+(y2(end,8)^2)) > only_above_radius
         display(['At t_manouvre of: ', + num2str(t_manouvre)])
         hold on
-        figure(1)   %intertial frame
         
+        figure(1)   %intertial frame
         plot3(y2(:,7),y2(:,8),y2(:,9),'DisplayName','sattelite trajectory');
         hold on  
         
         % Convert from inertial to polar velocities
         [theta_rad, rho] = cart2pol(y2(end,7),y2(end,8))
-        T = [  cos(theta_rad) -sin(theta_rad);
+        T_rot = [  cos(theta_rad) -sin(theta_rad);
                sin(theta_rad) cos(theta_rad)  ]
         V_cartesian = [y2(end,10) ; y2(end,11)]
-        V_polar = inv(T)*V_cartesian
-        
+        V_polar = inv(T_rot)*V_cartesian
         
         
         figure(2)   %rotating frame
